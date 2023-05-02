@@ -1,0 +1,13 @@
+tf/terraform.tfstate.backup
+tf/terraform.tfstate
+dist/*
+.parcel-cache/*
+tf/.terraform.lock.hcl
+tf/.terraform/providers/registry.terraform.io/hashicorp/random/3.4.3/darwin_arm64/terraform-provider-random_v3.4.3_x5
+tf/gke/terraform.tfstate
+tf/gke/.terraform/providers/registry.terraform.io/hashicorp/kubernetes/2.18.1/darwin_arm64/terraform-provider-kubernetes_v2.18.1_x5
+tf/gke/.terraform.lock.hcl
+tf/gke/terraform.tfstate.backup
+tf/gke/.terraform.tfstate.lock.info
+tf/gke/.terraform/terraform.tfstate
+node_modules/*
