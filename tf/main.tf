@@ -40,6 +40,19 @@ resource "google_project_service" "service-artifactregistry" {
   disable_dependent_services = true
 }
 
+resource "google_project_service" "service-dns" {
+  project = var.project_id
+  service = "dns.googleapis.com"
+
+  timeouts {
+    create = "30m"
+    update = "40m"
+  }
+
+  disable_dependent_services = true
+}
+
+
 
 resource "google_project_service" "service-oslogin" {
   project = var.project_id
