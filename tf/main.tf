@@ -52,6 +52,17 @@ resource "google_project_service" "service-dns" {
   disable_dependent_services = true
 }
 
+resource "google_project_service" "service-firebase" {
+  project = var.project_id
+  service = "firebase.googleapis.com"
+
+  timeouts {
+    create = "30m"
+    update = "40m"
+  }
+
+  disable_dependent_services = true
+}
 
 
 resource "google_project_service" "service-oslogin" {
