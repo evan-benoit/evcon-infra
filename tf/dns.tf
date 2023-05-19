@@ -17,3 +17,10 @@ resource "google_dns_record_set" "default" {
   ]
 }
 
+resource "google_dns_record_set" "cname" {
+  name         = "www.${google_dns_managed_zone.default.dns_name}"
+  managed_zone = google_dns_managed_zone.default.name
+  type         = "CNAME"
+  ttl          = 300
+  rrdatas      = ["trophypace.com."]
+}
