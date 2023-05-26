@@ -11,3 +11,5 @@ tf/gke/terraform.tfstate.backup
 tf/gke/.terraform.tfstate.lock.info
 tf/gke/.terraform/terraform.tfstate
 node_modules/*
+tf/.terraform/providers/registry.terraform.io/hashicorp/archive/2.3.0/darwin_arm64/terraform-provider-archive_v2.3.0_x5
+tf/tmp/populateLeagueSeason.zip
