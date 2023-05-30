@@ -35,3 +35,25 @@ resource "google_cloudfunctions_function" "populateLeagueSeason" {
     # Must match the function name in the cloud function `main.py` source code
     entry_point           = "populateLeagueSeason"
 }
+
+resource "google_cloud_scheduler_job" "populateLeagueSeason_job" {
+  name             = "populateLeagueSeason_job"
+  description      = "Run PopulateLeagueSeason hourly"
+  schedule         = "0 * * * *"
+  time_zone        = "GMT"
+  attempt_deadline = "320s"
+
+  retry_config {
+    retry_count = 1
+  }
+
+  http_target {
+    http_method = "POST"
+    uri         = "https://us-east1-evcon-app.cloudfunctions.net/populateLeagueSeason"
+    oidc_token {
+        service_account_email = "cloudfunctionserviceaccount@evcon-app.iam.gserviceaccount.com"
+        audience = "https://us-east1-evcon-app.cloudfunctions.net/populateLeagueSeason"
+    }
+  }
+
+}
