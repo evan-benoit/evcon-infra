@@ -209,6 +209,7 @@ def populateLeagueSeason(request):
 
 
         numberOfTeams = len(teamFixtures)
+        lastFullMatchNumber = maxMatchNumber;
 
         #Determine the ranking for each team for each match number
         #For each match number 
@@ -222,6 +223,8 @@ def populateLeagueSeason(request):
 
                 #If this team doesn't have this match number, it means not all matches have been played for this match number yet, so break
                 if (matchNumber >= len(teamFixtures[teamName])):
+                    if (matchNumber < lastFullMatchNumber):
+                        lastFullMatchNumber = matchNumber
                     continue
 
                 teamFixture = teamFixtures[teamName][matchNumber]
@@ -280,6 +283,7 @@ def populateLeagueSeason(request):
                     "data": dataPoints,
                 })
 
+        chartJSdata["lastFullMatchNumber"] = lastFullMatchNumber
 
         firebaseRecordKey = activeSeason['league'] + "-" + activeSeason['season']
 
