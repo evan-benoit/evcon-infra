@@ -164,7 +164,8 @@ def populateLeagueSeason(request):
 
 
         earliestTimestamp = earliestTimestamp - 86400000 * 3 #set the origin point to 3 days earlier than the earliest fixture
-        maxMatchNumber = 0;
+        maxMatchNumber = 0
+        maxCumPoints = 0
 
         #Loop through each team.  Calculate cumulative points, goals, and goal differential for each fixture
         for teamName in teamFixtures.keys(): 
@@ -188,8 +189,12 @@ def populateLeagueSeason(request):
             #for each fixture, compute the cumulative points
             # for fixture in teamFixtures[teamName]:
             for fixture in teamFixtures[teamName]:
-                fixture["cumPoints"] = previousCumPoints + fixture["pointsEarned"]
-                previousCumPoints = fixture["cumPoints"]
+                cumPoints = previousCumPoints + fixture["pointsEarned"]
+                fixture["cumPoints"] = cumPoints
+                previousCumPoints = cumPoints
+
+                if cumPoints > maxCumPoints:
+                    maxCumPoints = cumPoints
                 
                 fixture["matchNumber"] = matchNumber
 
@@ -284,6 +289,9 @@ def populateLeagueSeason(request):
                 })
 
         chartJSdata["lastFullMatchNumber"] = lastFullMatchNumber
+        chartJSdata["numberOfTeams"] = numberOfTeams
+        chartJSdata["maxCumPoints"] = maxCumPoints
+
 
         firebaseRecordKey = activeSeason['league'] + "-" + activeSeason['season']
 
