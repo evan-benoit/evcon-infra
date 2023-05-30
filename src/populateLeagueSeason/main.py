@@ -19,6 +19,10 @@ def populateLeagueSeason(request):
             'league' : '135', #Serie A
             'season' : '2022'
         },
+        {
+            'league' : '253', #Major League Soccer
+            'season' : '2023'
+        },        
     ] 
 
 
