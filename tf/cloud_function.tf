@@ -36,6 +36,23 @@ resource "google_cloudfunctions_function" "populateLeagueSeason" {
     entry_point           = "populateLeagueSeason"
 }
 
+
+resource "google_service_account" "cloudfunction_service_account" {
+  account_id           = "cloudfunction-service-account"
+  display_name         = "Cloud Function service account"
+  description          = "Service Account for running cloud functions"
+}
+
+resource "google_cloudfunctions_function_iam_member" "invoker" {
+  project        = google_cloudfunctions_function.populateLeagueSeason.project
+  region         = google_cloudfunctions_function.populateLeagueSeason.region
+  cloud_function = google_cloudfunctions_function.populateLeagueSeason.name
+
+  role   = "roles/cloudfunctions.invoker"
+  member = "serviceAccount:${google_service_account.cloudfunction_service_account.email}"
+}
+
+
 resource "google_cloud_scheduler_job" "populateLeagueSeason_job" {
   name             = "populateLeagueSeason_job"
   description      = "Run PopulateLeagueSeason hourly"
@@ -51,7 +68,7 @@ resource "google_cloud_scheduler_job" "populateLeagueSeason_job" {
     http_method = "POST"
     uri         = "https://us-east1-evcon-app.cloudfunctions.net/populateLeagueSeason"
     oidc_token {
-        service_account_email = "cloudfunctionserviceaccount@evcon-app.iam.gserviceaccount.com"
+        service_account_email = "${google_service_account.cloudfunction_service_account.email}"
         audience = "https://us-east1-evcon-app.cloudfunctions.net/populateLeagueSeason"
     }
   }
