@@ -27,6 +27,7 @@ def populateLeagueSeason(request):
 
 
     teamBorderColor = {
+        #premier league
         'Arsenal' : '#023474',
         'Aston Villa' : '#670e36',
         'Bournemouth' : '#ed1c24',
@@ -47,9 +48,26 @@ def populateLeagueSeason(request):
         'Tottenham' : '#132257',
         'West Ham' : '#2dafe5',
         'Wolves' : '#231f20',
+ 
+        #NWSL
+        'Angel City' : "#F2D4D7",
+        'Chicago Red Stars' : "#d22030",
+        'Houston Dash' : "#f36018",
+        'Kansas City' : "#CB333B",
+        'NJ/NY Gotham FC' : "#9ADBE8",
+        'North Carolina Courage' : "#ab1d37",
+        'OL Reign' : "#e62929",
+        'Orlando Pride' : "#00a7e1",
+        'Portland Thorns' : "#971d1f",
+        'Racing Louisville' : "#1E1A34",
+        'San Diego Wave' : "#00C1D4",
+        'Washington Spirit' : "#c31b32",
+
     }
 
     teamBackgroundColor = {
+
+        #Premier League
         'Arsenal' : '#db0007',
         'Aston Villa' : '#95bfe5',
         'Bournemouth' : '#000000',
@@ -70,6 +88,21 @@ def populateLeagueSeason(request):
         'Tottenham' : '#ffffff',
         'West Ham' : '#7c2c3b',
         'Wolves' : '#fdb913',
+
+
+        #NWSL
+        'Angel City' : "#010101",
+        'Chicago Red Stars' : "#42b7e6",
+        'Houston Dash' : "#9cc2ea",
+        'Kansas City' : "#091F2C",
+        'NJ/NY Gotham FC' : "#010101",
+        'North Carolina Courage' : "#09426a",
+        'OL Reign' : "#003692",
+        'Orlando Pride' : "#633394",
+        'Portland Thorns' : "#ffffff",
+        'Racing Louisville' : "#C5B4E3",
+        'San Diego Wave' : "#041E42",
+        'Washington Spirit' : "#171e27",
     }
 
 
