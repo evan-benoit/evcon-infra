@@ -2,6 +2,7 @@ import http.client
 import json
 import collections
 from google.cloud import firestore
+from google.cloud import secretmanager
 from datetime import datetime
 
 def populateLeagueSeason(request):
@@ -106,12 +107,16 @@ def populateLeagueSeason(request):
     }
 
 
+    secretClient = secretmanager.SecretManagerServiceClient()
+    secretName = f"projects/evcon-app/secrets/football-api-key/versions/latest"
+    response = secretClient.access_secret_version(name=secretName)
+    footballAPIKey = response.payload.data.decode('UTF-8')
 
 
     conn = http.client.HTTPSConnection("api-football-v1.p.rapidapi.com")
 
     headers = {
-        'X-RapidAPI-Key': "bd4c89aaccmshb317afc95667941p1c0f98jsna8a191b4f7be",
+        'X-RapidAPI-Key': footballAPIKey,
         'X-RapidAPI-Host': "api-football-v1.p.rapidapi.com"
         }
 
