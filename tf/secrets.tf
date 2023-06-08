@@ -26,6 +26,7 @@ resource "google_secret_manager_secret_iam_binding" "football-api-key-binding" {
   role = "roles/secretmanager.secretAccessor"
   members = [
     "serviceAccount:${google_service_account.cloudfunction_service_account.email}",
+    "serviceAccount:${var.project_id}@appspot.gserviceaccount.com",
     "user:evan.m.benoit@gmail.com"
   ]
 }
