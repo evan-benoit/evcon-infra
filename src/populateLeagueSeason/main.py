@@ -312,7 +312,7 @@ def populateLeagueSeason(request):
                     "borderColor": teamBorderColor[teamName],
                     "backgroundColor": teamBackgroundColor[teamName],
                     "tension": 0.3,
-                    "stepped": False,
+                    "stepped": True,
                     "teamLogo": fixture["teamLogo"],
                     "data": dataPoints
                 })
@@ -321,7 +321,7 @@ def populateLeagueSeason(request):
                 chartJSdata["datasets"].append({
                     "label": teamName,
                     "tension": 0.3,
-                    "stepped": False,
+                    "stepped": True,
                     "teamLogo": fixture["teamLogo"],
                     "data": dataPoints,
                 })
