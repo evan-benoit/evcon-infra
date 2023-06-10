@@ -56,20 +56,5 @@ resource "kubernetes_deployment" "webserver" {
     }
   }
 }
-resource "kubernetes_service" "webserver" {
-  metadata {
-    name      = "webserver"
-  }
-  spec {
-    selector = {
-      app = kubernetes_deployment.webserver.spec.0.template.0.metadata.0.labels.app
-    }
-    type = "LoadBalancer"
-    port {
-      port        = 80
-      target_port = 80
-    }
-  }
-}
 
 
