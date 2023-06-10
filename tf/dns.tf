@@ -13,7 +13,7 @@ resource "google_dns_record_set" "default" {
   type         = "A"
   ttl          = 300
   rrdatas = [
-    "34.23.73.154"
+    "34.120.168.62"
   ]
 }
 
