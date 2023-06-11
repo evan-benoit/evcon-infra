@@ -183,7 +183,7 @@ defaultColors = [
 
 
 #quick script to get a list of team names, so we can cut-and-paste into the dictionary above and then get their colors
-def getBlankColorTemplate(leagueID, season):
+def getBlankColorDict(leagueID, season):
     secretClient = secretmanager.SecretManagerServiceClient()
     secretName = f"projects/evcon-app/secrets/football-api-key/versions/latest"
     response = secretClient.access_secret_version(name=secretName)
@@ -210,4 +210,4 @@ def getBlankColorTemplate(leagueID, season):
         print ("'" + team + "': '',")
 
 
-getBlankColorTemplate(135, 2022)
+getBlankColorDict(135, 2022)
