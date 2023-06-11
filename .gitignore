@@ -14,3 +14,4 @@ node_modules/*
 tf/.terraform/providers/registry.terraform.io/hashicorp/archive/2.3.0/darwin_arm64/terraform-provider-archive_v2.3.0_x5
 tf/tmp/populateLeagueSeason.zip
 src/populateLeagueSeason/env/*
+.vscode/settings.json
