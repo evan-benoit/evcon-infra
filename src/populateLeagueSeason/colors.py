@@ -1,3 +1,8 @@
+from google.cloud import secretmanager
+import http.client
+import json
+
+
 teamBorderColor = {
     #premier league
     'Arsenal' : '#023474',
@@ -174,3 +179,35 @@ defaultColors = [
     '#946aa2',
     '#5d4c86',
 ]
+
+
+
+#quick script to get a list of team names, so we can cut-and-paste into the dictionary above and then get their colors
+def getBlankColorTemplate(leagueID, season):
+    secretClient = secretmanager.SecretManagerServiceClient()
+    secretName = f"projects/evcon-app/secrets/football-api-key/versions/latest"
+    response = secretClient.access_secret_version(name=secretName)
+    footballAPIKey = response.payload.data.decode('UTF-8')
+
+    conn = http.client.HTTPSConnection("api-football-v1.p.rapidapi.com")
+
+    headers = {
+        'X-RapidAPI-Key': footballAPIKey,
+        'X-RapidAPI-Host': "api-football-v1.p.rapidapi.com"
+        }
+
+    conn.request("GET", "/v3/teams?league=" + str(leagueID) + "&season=" + str(season), headers=headers)
+    res = conn.getresponse()
+    rawData = res.read()
+    data = json.loads(rawData.decode("utf-8"));
+
+    teams = []
+
+    for team in data["response"]:
+        teams.append(team["team"]["name"])
+    
+    for team in sorted(teams):        
+        print ("'" + team + "': '',")
+
+
+getBlankColorTemplate(135, 2022)
