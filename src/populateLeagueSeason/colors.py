@@ -3,6 +3,7 @@ import http.client
 import json
 
 
+#when it doubt, look them up at https://teamcolorcodes.com
 teamBorderColor = {
     #premier league
     'Arsenal' : '#023474',
@@ -71,6 +72,28 @@ teamBorderColor = {
     'St. Louis City': '#011128',
     'Toronto FC': '#990d22',
     'Vancouver Whitecaps FC': '#061a4a',
+
+    #Serie A
+    'AC Milan': '#000',
+    'AS Roma': '#791224',
+    'Atalanta': '#195baa',
+    'Bologna': '#152238',
+    'Cremonese': '#b78b3e',
+    'Empoli': '#094492',
+    'Fiorentina': '#371b80',
+    'Inter': '#90804f',
+    'Juventus': '#000',
+    'Lazio': '#77cff5',
+    'Lecce': '#e6001c',
+    'Monza': '#bb0024',
+    'Napoli': '#032b6e',
+    'Salernitana': '#881123',
+    'Sampdoria': '#174084',
+    'Sassuolo': '#149a41',
+    'Spezia': '#131517',
+    'Torino': '#761205',
+    'Udinese': '#000',
+    'Verona': '#37428a',
 }
 
 teamBackgroundColor = {
@@ -142,6 +165,28 @@ teamBackgroundColor = {
     'St. Louis City': '#cb0038',
     'Toronto FC': '#313733',
     'Vancouver Whitecaps FC': '#82b5de',
+
+    #Serie A
+    'AC Milan': '#f6000d',
+    'AS Roma': '#ebb033',
+    'Atalanta': '#000',
+    'Bologna': '#8f0c1d',
+    'Cremonese': '#b3000d',
+    'Empoli': '#f2efde',
+    'Fiorentina': '#90804d',
+    'Inter': '#095397',
+    'Juventus': '#000',
+    'Lazio': '#77cff5',
+    'Lecce': '#fff20c',
+    'Monza': '#f5f5f5',
+    'Napoli': '#178ecd',
+    'Salernitana': '#f5f5f5',
+    'Sampdoria': '#b20014',
+    'Sassuolo': '#000',
+    'Spezia': '#a1874d',
+    'Torino': '#e9a211',
+    'Udinese': '#786a2a',
+    'Verona': '#ebd812',
 }
 
 
@@ -210,4 +255,4 @@ def getBlankColorDict(leagueID, season):
         print ("'" + team + "': '',")
 
 
-getBlankColorDict(135, 2022)
+# getBlankColorDict(135, 2022)
