@@ -4,7 +4,7 @@ import collections
 from google.cloud import firestore
 from google.cloud import secretmanager
 from datetime import datetime
-from colors import (teamBorderColor, teamBackgroundColor)
+from colors import (teamBorderColor, teamBackgroundColor, defaultColors)
 
 def populateLeagueSeason(request):
 
@@ -205,7 +205,7 @@ def populateLeagueSeason(request):
         #format in the chartJS json
         chartJSdata = collections.defaultdict(list)
 
-        for teamName in sorted(teamFixtures.keys()):
+        for teamNumber, teamName in enumerate(sorted(teamFixtures.keys())):
 
             dataPoints = []
             dataPoints.append({"timestamp": earliestTimestamp, "matchNumber": 0, "cumPoints": 0}) #add an origin-point for all teams
@@ -225,27 +225,25 @@ def populateLeagueSeason(request):
                                 "reverseRank": fixture["reverseRank"], 
                                 })
                 
-                    
+            #look up colors for this team, or default if we don't have one
             if teamName in teamBorderColor and teamName in teamBackgroundColor:
-
-                chartJSdata["datasets"].append({
-                    "label": teamName,
-                    "borderColor": teamBorderColor[teamName],
-                    "backgroundColor": teamBackgroundColor[teamName],
-                    "tension": 0.3,
-                    "stepped": True,
-                    "teamLogo": fixture["teamLogo"],
-                    "data": dataPoints
-                })
-
+                borderColor = teamBorderColor[teamName]
+                backgroundColor = teamBackgroundColor[teamName]
             else:
-                chartJSdata["datasets"].append({
-                    "label": teamName,
-                    "tension": 0.3,
-                    "stepped": True,
-                    "teamLogo": fixture["teamLogo"],
-                    "data": dataPoints,
-                })
+                borderColor = defaultColors[teamNumber]
+                backgroundColor = defaultColors[teamNumber]
+
+
+            chartJSdata["datasets"].append({
+                "label": teamName,
+                "borderColor": borderColor,
+                "backgroundColor": backgroundColor,
+                "tension": 0.3,
+                "stepped": True,
+                "teamLogo": fixture["teamLogo"],
+                "data": dataPoints
+            })
+
 
         chartJSdata["lastFullMatchNumber"] = lastFullMatchNumber
         chartJSdata["numberOfTeams"] = numberOfTeams
