@@ -61,7 +61,9 @@ resource "google_cloud_scheduler_job" "populateLeagueSeason_job" {
   attempt_deadline = "320s"
 
   retry_config {
-    retry_count = 1
+    min_backoff_duration = "120s"
+    max_retry_duration = "3600s"
+    max_doublings = 4
   }
 
   http_target {
