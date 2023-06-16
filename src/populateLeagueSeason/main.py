@@ -223,8 +223,6 @@ def populateLeagueSeason(request):
                             fixture["cumDifferential"] = previousCumDifferential + fixture["teamScore"] - fixture["oppScore"]
                             previousCumDifferential = fixture["cumDifferential"]
 
-                            fixture["teamLogo"] = teamLogo
-
 
                     numberOfTeams = len(teamFixtures)
                     lastFullMatchNumber = maxMatchNumber;
