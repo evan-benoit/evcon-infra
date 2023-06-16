@@ -196,15 +196,6 @@ def populateLeagueSeason(request):
                         previousCumDifferential = 0
                         matchNumber = 1
 
-                        #get the URL to the team logo
-                        # conn.request("GET", "/v3/teams/statistics?league=" + activeSeason['league'] + "&season=" + activeSeason['season'] + "&team=" + str(teamFixtures[teamName][0]["teamId"]), headers=headers)
-                        # res = conn.getresponse()
-                        # rawData = res.read()
-                        # data = json.loads(rawData.decode("utf-8"));
-
-                        # teamLogo = data["response"]["team"]["logo"]
-                        teamLogo = ""
-
                         #sort the fixtures by time
                         list.sort(teamFixtures[teamName], key=lambda d: d['timestamp'])
 
