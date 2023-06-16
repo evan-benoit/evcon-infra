@@ -60,16 +60,28 @@ def populateLeagueSeason(request):
         'X-RapidAPI-Host': "api-football-v1.p.rapidapi.com"
         }
 
-    todaysDate = datetime.today().strftime('%Y-%m-%d')
+    
 
-    thisYear = datetime.today().year
-    lastYear = datetime.today().year - 1
+    #If a season was requested, look for that one.  If it wasn't, then look for this year and last on this date
+    if (request is not None and request.args.exists("season") ):
+        seasons = [request.args.exists("season")]
 
-    #Look at both this year and a season that started last year (e.g. if it's 2023 look at the 2022 season)
-    seasons = [thisYear, lastYear]
+        startDate = request.args.exists("season") + "-01-01"
+        endDate = request.args.exists("season") + "-12-31"
 
-    #[EVTODO] If a date range was not passed in, get the last date this was run
-    date = '2023-03-06'
+
+    else :
+        thisYear = datetime.today().year
+        lastYear = datetime.today().year - 1
+
+        #Look at both this year and a season that started last year (e.g. if it's 2023 look at the 2022 season)
+        seasons = [thisYear, lastYear]
+
+        todaysDate = datetime.today().strftime('%Y-%m-%d')
+        startDate = todaysDate
+        endDate = todaysDate
+
+
 
     for country in countryLeagues:
 
@@ -84,6 +96,10 @@ def populateLeagueSeason(request):
 
         for league in country['leagues']:
 
+            if (request is not None and request.args.exists("leagueid") ):
+                if (request.args['leagueid'] != league["id"]):
+                    continue;
+
             print ("league " + league["id"])
 
             leagueJSdata = {
@@ -96,7 +112,7 @@ def populateLeagueSeason(request):
 
                 #[EVTODO] Query football-api for the date range
                 #[EVTODO] If there is a match on this date, get the season
-                conn.request("GET", "/v3/fixtures?league=" + league['id'] + "&season=" + str(season) + "&from=" + date + "&to=" + date, headers=headers)
+                conn.request("GET", "/v3/fixtures?league=" + league['id'] + "&season=" + str(season) + "&from=" + startDate + "&to=" + endDate, headers=headers)
                 res = conn.getresponse()
                 rawData = res.read()
                 dateFixtures = json.loads(rawData.decode("utf-8"));
@@ -292,7 +308,6 @@ def populateLeagueSeason(request):
                             "backgroundColor": backgroundColor,
                             "tension": 0.3,
                             "stepped": True,
-                            "teamLogo": fixture["teamLogo"],
                             "data": dataPoints
                         })
 
