@@ -37,7 +37,7 @@ def populateTodaysLeagues(request):
     countryLeagues = [
         {
             'code' : 'us',
-            'display' : 'United States',
+            'display' : 'US',
             'leagues' : [
                 {
                     'id': 254,
@@ -61,7 +61,7 @@ def populateTodaysLeagues(request):
         },
         {
             'code' : 'it',
-            'display' : 'Italy',
+            'display' : 'IT',
             'leagues' : [
                 {
                     'id': 135,
