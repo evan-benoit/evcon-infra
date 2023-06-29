@@ -23,8 +23,8 @@ resource "google_storage_bucket_object" "zip_getLeagueSeason" {
 }
 
 # Create the Cloud function triggered by a `Finalize` event on the bucket
-resource "google_cloudfunctions_function" "populateLeagueSeason" {
-    name                  = "populateLeagueSeason"
+resource "google_cloudfunctions_function" "populateTodaysLeagues" {
+    name                  = "populateTodaysLeagues"
     runtime               = "python39"
     trigger_http          = true
 
@@ -33,7 +33,7 @@ resource "google_cloudfunctions_function" "populateLeagueSeason" {
     source_archive_object = google_storage_bucket_object.zip_getLeagueSeason.name
 
     # Must match the function name in the cloud function `main.py` source code
-    entry_point           = "populateLeagueSeason"
+    entry_point           = "populateTodaysLeagues"
 }
 
 
@@ -44,18 +44,18 @@ resource "google_service_account" "cloudfunction_service_account" {
 }
 
 resource "google_cloudfunctions_function_iam_member" "invoker" {
-  project        = google_cloudfunctions_function.populateLeagueSeason.project
-  region         = google_cloudfunctions_function.populateLeagueSeason.region
-  cloud_function = google_cloudfunctions_function.populateLeagueSeason.name
+  project        = google_cloudfunctions_function.populateTodaysLeagues.project
+  region         = google_cloudfunctions_function.populateTodaysLeagues.region
+  cloud_function = google_cloudfunctions_function.populateTodaysLeagues.name
 
   role   = "roles/cloudfunctions.invoker"
   member = "serviceAccount:${google_service_account.cloudfunction_service_account.email}"
 }
 
 
-resource "google_cloud_scheduler_job" "populateLeagueSeason_job" {
-  name             = "populateLeagueSeason_job"
-  description      = "Run PopulateLeagueSeason hourly"
+resource "google_cloud_scheduler_job" "populateTodaysLeagues_job" {
+  name             = "populateTodaysLeagues_job"
+  description      = "Run populateTodaysLeagues hourly"
   schedule         = "0 * * * *"
   time_zone        = "GMT"
   attempt_deadline = "320s"
@@ -68,10 +68,10 @@ resource "google_cloud_scheduler_job" "populateLeagueSeason_job" {
 
   http_target {
     http_method = "POST"
-    uri         = "https://us-east1-evcon-app.cloudfunctions.net/populateLeagueSeason"
+    uri         = "https://us-east1-evcon-app.cloudfunctions.net/populateTodaysLeagues"
     oidc_token {
         service_account_email = "${google_service_account.cloudfunction_service_account.email}"
-        audience = "https://us-east1-evcon-app.cloudfunctions.net/populateLeagueSeason"
+        audience = "https://us-east1-evcon-app.cloudfunctions.net/populateTodaysLeagues"
     }
   }
 
