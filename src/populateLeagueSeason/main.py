@@ -325,7 +325,6 @@ def backPopulate():
     for year in range(2012, 2024): #MLS started playing in 1996, but football API only has data starting in 2012
         populateLeagueSeason('us', '🇺🇸US', 253, 'MLS', year)
 
-
     for year in range(2019, 2024): #NWSL started playing in 2012, but football API only has data starting in 2019
         populateLeagueSeason('us', '🇺🇸US', 254, 'NWSL', year)
 
