@@ -320,16 +320,16 @@ def populateLeagueSeason(countryCode, countryDisplay, leagueID, leagueDisplay, s
 
 
 
-populateLeagueSeason('us', 'US', 254, 'MLS', 2022)
-populateLeagueSeason('us', 'US', 254, 'MLS', 2023)
-populateLeagueSeason('us', 'US', 253, 'NWSL', 2022)
-populateLeagueSeason('us', 'US', 253, 'NWSL', 2023)
-populateLeagueSeason('uk', 'UK', 39, 'Premier League', 2022)
-populateLeagueSeason('uk', 'UK', 39, 'Premier League', 2021)
-populateLeagueSeason('uk', 'UK', 39, 'Premier League', 2019)
-populateLeagueSeason('it', 'IT', 135, 'Serie A', 2022)
-populateLeagueSeason('it', 'IT', 135, 'Serie A', 2021)
-populateLeagueSeason('it', 'IT', 135, 'Serie A', 2019)
+populateLeagueSeason('us', '🇺🇸US', 254, 'MLS', 2022)
+populateLeagueSeason('us', '🇺🇸US', 254, 'MLS', 2023)
+populateLeagueSeason('us', '🇺🇸US', 253, 'NWSL', 2022)
+populateLeagueSeason('us', '🇺🇸US', 253, 'NWSL', 2023)
+populateLeagueSeason('uk', '🇬🇧UK', 39, 'Premier League', 2022)
+populateLeagueSeason('uk', '🇬🇧UK', 39, 'Premier League', 2021)
+populateLeagueSeason('uk', '🇬🇧UK', 39, 'Premier League', 2019)
+populateLeagueSeason('it', '🇮🇹Italy', 135, 'Serie A', 2022)
+populateLeagueSeason('it', '🇮🇹Italy', 135, 'Serie A', 2021)
+populateLeagueSeason('it', '🇮🇹Italy', 135, 'Serie A', 2019)
 
 
 
