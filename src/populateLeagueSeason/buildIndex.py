@@ -5,22 +5,36 @@ from datetime import datetime
 
 db = firestore.Client(project='evcon-app')
 
+index = {}
 
 def getCountries():
-    # Code from https://firebase.google.com/docs/firestore/query-data/get-data#get_all_documents_in_a_collection but it doesn't work!
     countryCollection = db.collection("countries").stream()
     for country in countryCollection:
         print(country.id)
-        #evtodo build a dict of the countries, leagues, and seasons, and store it.
+        index[country.id] = {}
+
+        getLeagues(country.id)
+
 
 def getLeagues(countryCode):
-    i = 1
+    leagueCollection = db.collection("countries/" + countryCode + "/leagues").stream()
+    for league in leagueCollection:
+        print("  " + league.id)
+        index[countryCode][league.id] = []
+
+        getSeasons(countryCode, league.id)
+    
 
 def getSeasons(countryCode, leagueID):
-    i = 1
+    seasonCollection = db.collection("countries/" + countryCode + "/leagues/" + leagueID + "/seasons").stream()
+    for season in seasonCollection:
+        print("    " + season.id)
+        index[countryCode][leagueID].append(season.id)
+
+    
 
 def buildIndex():
-    data = getCountries()
-    # db.document("index").set(data)
+    getCountries()
+    db.document("index/latest").set(index)
 
 buildIndex()
