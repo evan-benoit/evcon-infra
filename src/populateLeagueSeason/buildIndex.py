@@ -48,4 +48,4 @@ def buildIndex():
     getCountries()
     db.document("index/latest").set(index)
 
-buildIndex()
+# buildIndex()

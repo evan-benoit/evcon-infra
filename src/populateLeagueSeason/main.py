@@ -5,6 +5,7 @@ from google.cloud import firestore
 from google.cloud import secretmanager
 from datetime import datetime
 from colors import (teamBorderColor, teamBackgroundColor, defaultColors)
+from buildIndex import (buildIndex)
 
 db = firestore.Client(project='evcon-app')
 
@@ -320,18 +321,31 @@ def populateLeagueSeason(countryCode, countryDisplay, leagueID, leagueDisplay, s
 
 
 
-populateLeagueSeason('us', '🇺🇸US', 254, 'MLS', 2022)
-populateLeagueSeason('us', '🇺🇸US', 254, 'MLS', 2023)
-populateLeagueSeason('us', '🇺🇸US', 253, 'NWSL', 2022)
-populateLeagueSeason('us', '🇺🇸US', 253, 'NWSL', 2023)
-populateLeagueSeason('uk', '🇬🇧UK', 39, 'Premier League', 2022)
-populateLeagueSeason('uk', '🇬🇧UK', 39, 'Premier League', 2021)
-populateLeagueSeason('uk', '🇬🇧UK', 39, 'Premier League', 2019)
-populateLeagueSeason('it', '🇮🇹Italy', 135, 'Serie A', 2022)
-populateLeagueSeason('it', '🇮🇹Italy', 135, 'Serie A', 2021)
-populateLeagueSeason('it', '🇮🇹Italy', 135, 'Serie A', 2019)
+
+for year in range(2012, 2024): #MLS started playing in 1996, but football API only has data starting in 2012
+    populateLeagueSeason('us', '🇺🇸US', 253, 'MLS', year)
 
 
+for year in range(2019, 2024): #NWSL started playing in 2012, but football API only has data starting in 2019
+    populateLeagueSeason('us', '🇺🇸US', 254, 'NWSL', year)
+
+for year in range(2010, 2023): 
+    populateLeagueSeason('uk', '🇬🇧UK', 39, 'Premier League', year)
+
+for year in range(2010, 2023): 
+    populateLeagueSeason('uk', '🇬🇧UK', 40, 'Championship', year)
+
+for year in range(2011, 2023): 
+    populateLeagueSeason('uk', '🇬🇧UK', 41, 'League One', year)    
+
+for year in range(2011, 2023): 
+    populateLeagueSeason('uk', '🇬🇧UK', 42, 'League Two', year)    
+
+for year in range(2010, 2023): 
+    populateLeagueSeason('it', '🇮🇹Italy', 135, 'Serie A', year)
+
+
+buildIndex()
 
 
 # populateTodaysLeagues(None)
