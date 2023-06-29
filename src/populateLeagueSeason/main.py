@@ -321,31 +321,30 @@ def populateLeagueSeason(countryCode, countryDisplay, leagueID, leagueDisplay, s
 
 
 
-
-for year in range(2012, 2024): #MLS started playing in 1996, but football API only has data starting in 2012
-    populateLeagueSeason('us', '🇺🇸US', 253, 'MLS', year)
-
-
-for year in range(2019, 2024): #NWSL started playing in 2012, but football API only has data starting in 2019
-    populateLeagueSeason('us', '🇺🇸US', 254, 'NWSL', year)
-
-for year in range(2010, 2023): 
-    populateLeagueSeason('uk', '🇬🇧UK', 39, 'Premier League', year)
-
-for year in range(2010, 2023): 
-    populateLeagueSeason('uk', '🇬🇧UK', 40, 'Championship', year)
-
-for year in range(2011, 2023): 
-    populateLeagueSeason('uk', '🇬🇧UK', 41, 'League One', year)    
-
-for year in range(2011, 2023): 
-    populateLeagueSeason('uk', '🇬🇧UK', 42, 'League Two', year)    
-
-for year in range(2010, 2023): 
-    populateLeagueSeason('it', '🇮🇹Italy', 135, 'Serie A', year)
+def backPopulate():
+    for year in range(2012, 2024): #MLS started playing in 1996, but football API only has data starting in 2012
+        populateLeagueSeason('us', '🇺🇸US', 253, 'MLS', year)
 
 
-buildIndex()
+    for year in range(2019, 2024): #NWSL started playing in 2012, but football API only has data starting in 2019
+        populateLeagueSeason('us', '🇺🇸US', 254, 'NWSL', year)
+
+    for year in range(2010, 2023): 
+        populateLeagueSeason('uk', '🇬🇧UK', 39, 'Premier League', year)
+
+    for year in range(2010, 2023): 
+        populateLeagueSeason('uk', '🇬🇧UK', 40, 'Championship', year)
+
+    for year in range(2011, 2023): 
+        populateLeagueSeason('uk', '🇬🇧UK', 41, 'League One', year)    
+
+    for year in range(2011, 2023): 
+        populateLeagueSeason('uk', '🇬🇧UK', 42, 'League Two', year)    
+
+    for year in range(2010, 2023): 
+        populateLeagueSeason('it', '🇮🇹Italy', 135, 'Serie A', year)
+
+    buildIndex()
 
 
 # populateTodaysLeagues(None)
