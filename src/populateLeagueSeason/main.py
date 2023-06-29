@@ -100,7 +100,7 @@ def populateTodaysLeagues(request):
 
                 #If a game was played for this league on this day, reprocess the entire season
                 if len(dateFixtures["response"]) > 0:
-                    populateLeagueSeason(country["code"], league["id"], season )
+                    populateLeagueSeason(country["code"], country["display"], league["id"], league["display"], season )
 
                    
     print ("success")
