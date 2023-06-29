@@ -109,18 +109,16 @@ def populateTodaysLeagues(request):
 
 
 
-def populateLeagueSeason(countryCode, leagueID, season):
+def populateLeagueSeason(countryCode, countryDisplay, leagueID, leagueDisplay, season):
 
     countryJSdata = {
-        'foo': 'bar', #EVTODO THIS IS A HACK
-        'display': 'baz'
+        'display': countryDisplay
     }
 
     db.collection(u'countries').document(countryCode).set(countryJSdata)
 
     leagueJSdata = {
-        'foo': 'bar', #EVTODO THIS IS A HACK
-        'display': 'baz'
+        'display': leagueDisplay
     }
 
     db.collection(u'countries/' + countryCode + "/leagues").document(str(leagueID)).set(leagueJSdata)
@@ -322,16 +320,16 @@ def populateLeagueSeason(countryCode, leagueID, season):
 
 
 
-populateLeagueSeason('us', 254, 2022)
-populateLeagueSeason('us', 254, 2023)
-populateLeagueSeason('us', 253, 2022)
-populateLeagueSeason('us', 253, 2023)
-populateLeagueSeason('uk', 39, 2022)
-populateLeagueSeason('uk', 39, 2021)
-populateLeagueSeason('uk', 39, 2019)
-populateLeagueSeason('it', 135, 2022)
-populateLeagueSeason('it', 135, 2021)
-populateLeagueSeason('it', 135, 2019)
+populateLeagueSeason('us', 'US', 254, 'MLS', 2022)
+populateLeagueSeason('us', 'US', 254, 'MLS', 2023)
+populateLeagueSeason('us', 'US', 253, 'NWSL', 2022)
+populateLeagueSeason('us', 'US', 253, 'NWSL', 2023)
+populateLeagueSeason('uk', 'UK', 39, 'Premier League', 2022)
+populateLeagueSeason('uk', 'UK', 39, 'Premier League', 2021)
+populateLeagueSeason('uk', 'UK', 39, 'Premier League', 2019)
+populateLeagueSeason('it', 'IT', 135, 'Serie A', 2022)
+populateLeagueSeason('it', 'IT', 135, 'Serie A', 2021)
+populateLeagueSeason('it', 'IT', 135, 'Serie A', 2019)
 
 
 
