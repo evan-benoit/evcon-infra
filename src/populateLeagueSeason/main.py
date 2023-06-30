@@ -58,6 +58,18 @@ def populateTodaysLeagues(request):
                     'id': 39,
                     'display' : 'Premier League'
                 },
+                {
+                    'id': 40,
+                    'display' : 'Championship'
+                },
+                {
+                    'id': 41,
+                    'display' : 'League One'
+                },
+                {
+                    'id': 42,
+                    'display' : 'League Two'
+                },                                
             ],
         },
         {
@@ -105,6 +117,8 @@ def populateTodaysLeagues(request):
 
                    
     print ("success")
+
+    buildIndex()
 
     return 'OK'
 
@@ -346,4 +360,4 @@ def backPopulate():
     buildIndex()
 
 
-# populateTodaysLeagues(None)
+populateTodaysLeagues(None)
