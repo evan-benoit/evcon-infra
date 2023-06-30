@@ -361,7 +361,7 @@ def backPopulate():
 
             for season in data["response"][0]["seasons"]:
 
-                #The API sometimes gives creates seasons before they start.  Ignore them.
+                #The API sometimes creates seasons before they start.  Ignore them.
                 seasonStart = datetime.strptime(season["start"], "%Y-%m-%d")
                 if (seasonStart < today):
                     populateLeagueSeason(country["code"], country["display"], league["id"], league["display"], season["year"])
