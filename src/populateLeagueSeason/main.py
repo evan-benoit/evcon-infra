@@ -162,7 +162,8 @@ def populateLeagueSeason(countryCode, countryDisplay, leagueID, leagueDisplay, s
     # loop through fixtures, build a dict of fixtures for each team
     for fixture in data["response"]:
 
-        if fixture["fixture"]["status"]["short"] == "FT":
+        #only get completed games that are in the regular season
+        if fixture["fixture"]["status"]["short"] == "FT" and fixture["league"]["round"].startswith("Regular"):
 
             homeTeam = fixture["teams"]["home"]["name"]
             awayTeam = fixture["teams"]["away"]["name"]
@@ -370,5 +371,5 @@ def backPopulate():
 
 
 # populateTodaysLeagues(None)
-# backPopulate()
-buildIndex()
+backPopulate()
+# buildIndex()
