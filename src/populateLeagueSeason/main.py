@@ -201,6 +201,7 @@ def populateLeagueSeason(countryCode, countryDisplay, leagueID, leagueDisplay, s
                         'awayScore': awayScore,
                         'teamId': fixture["teams"]["home"]["id"],
                         'teamName': fixture["teams"]["home"]["name"],
+                        'round': fixture["league"]["round"],
                         }
             
             awayFixture = {'timestamp': timestamp,
@@ -212,7 +213,8 @@ def populateLeagueSeason(countryCode, countryDisplay, leagueID, leagueDisplay, s
                         'awayTeam': awayTeam,
                         'awayScore': awayScore,
                         'teamId': fixture["teams"]["away"]["id"],
-                        'teamName': fixture["teams"]["away"]["name"]
+                        'teamName': fixture["teams"]["away"]["name"],
+                        'round': fixture["league"]["round"],
                         }
             
             # add to the array for each team
@@ -310,6 +312,7 @@ def populateLeagueSeason(countryCode, countryDisplay, leagueID, leagueDisplay, s
                             "awayScore": fixture["awayScore"],                              
                             "rank": fixture["rank"], 
                             "reverseRank": fixture["reverseRank"], 
+                            "round": fixture["round"], 
                             })
             
         #look up colors for this team, or default if we don't have one
@@ -370,5 +373,5 @@ def backPopulate():
 
 
 # populateTodaysLeagues(None)
-# backPopulate()
-buildIndex()
+backPopulate()
+# buildIndex()
