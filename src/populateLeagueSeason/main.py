@@ -32,10 +32,7 @@ rootData = {
 
 # db.document("countries").set(rootData)
 
-
-def populateTodaysLeagues(request):
-
-    countryLeagues = [
+countryLeagues = [
         {
             'code' : 'us',
             'display' : 'US',
@@ -83,6 +80,9 @@ def populateTodaysLeagues(request):
             ],
         },
     ]
+
+
+def populateTodaysLeagues(request):
 
     thisYear = datetime.today().year
     lastYear = datetime.today().year - 1
