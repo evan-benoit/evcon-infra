@@ -46,7 +46,7 @@ countryLeagues = [
                 },
                 {
                     'id': 254,
-                    'display' : 'National Women''s Soccer League'
+                    'display' : 'National Women\'s Soccer League'
                 },
             ],
         },
@@ -370,4 +370,5 @@ def backPopulate():
 
 
 # populateTodaysLeagues(None)
-backPopulate()
+# backPopulate()
+buildIndex()
