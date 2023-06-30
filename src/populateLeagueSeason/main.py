@@ -35,21 +35,21 @@ rootData = {
 countryLeagues = [
         {
             'code' : 'us',
-            'display' : 'US',
+            'display' : '🇺🇸US',
             'leagues' : [
                 {
-                    'id': 254,
-                    'display' : 'MLS'
+                    'id': 253,
+                    'display' : 'Major League Soccer'
                 },
                 {
-                    'id': 253,
-                    'display' : 'NWSL'
+                    'id': 254,
+                    'display' : 'National Women''s Soccer League'
                 },
             ],
         },
         {
             'code' : 'uk',
-            'display' : 'UK',
+            'display' : '🇬🇧UK',
             'leagues' : [
                 {
                     'id': 39,
@@ -71,7 +71,7 @@ countryLeagues = [
         },
         {
             'code' : 'it',
-            'display' : 'IT',
+            'display' : '🇮🇹IT',
             'leagues' : [
                 {
                     'id': 135,
@@ -125,6 +125,8 @@ def populateTodaysLeagues(request):
 
 
 def populateLeagueSeason(countryCode, countryDisplay, leagueID, leagueDisplay, season):
+
+    print ("populating " + countryDisplay + ":" + leagueDisplay + ":" + str(season))
 
     countryJSdata = {
         'display': countryDisplay
@@ -336,28 +338,26 @@ def populateLeagueSeason(countryCode, countryDisplay, leagueID, leagueDisplay, s
 
 
 def backPopulate():
-    for year in range(2012, 2024): #MLS started playing in 1996, but football API only has data starting in 2012
-        populateLeagueSeason('us', '🇺🇸US', 253, 'MLS', year)
+    for country in countryLeagues:
+        for league in country["leagues"]:
+            leagueID = league["id"]
 
-    for year in range(2019, 2024): #NWSL started playing in 2012, but football API only has data starting in 2019
-        populateLeagueSeason('us', '🇺🇸US', 254, 'NWSL', year)
+            conn.request("GET", "/v3/leagues?id=" + str(leagueID), headers=headers)
 
-    for year in range(2010, 2023): 
-        populateLeagueSeason('uk', '🇬🇧UK', 39, 'Premier League', year)
+            res = conn.getresponse()
+            rawData = res.read()
 
-    for year in range(2010, 2023): 
-        populateLeagueSeason('uk', '🇬🇧UK', 40, 'Championship', year)
+            # print(data.decode("utf-8"))
 
-    for year in range(2011, 2023): 
-        populateLeagueSeason('uk', '🇬🇧UK', 41, 'League One', year)    
+            data = json.loads(rawData.decode("utf-8"));
 
-    for year in range(2011, 2023): 
-        populateLeagueSeason('uk', '🇬🇧UK', 42, 'League Two', year)    
+            leagues = collections.defaultdict(list)
 
-    for year in range(2010, 2023): 
-        populateLeagueSeason('it', '🇮🇹Italy', 135, 'Serie A', year)
+            for season in data["response"][0]["seasons"]:
+                populateLeagueSeason(country["code"], country["display"], league["id"], league["display"], season["year"])
 
     buildIndex()
 
 
-populateTodaysLeagues(None)
+# populateTodaysLeagues(None)
+backPopulate()
