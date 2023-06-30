@@ -6,6 +6,9 @@ from google.cloud import secretmanager
 from datetime import datetime
 from colors import (teamBorderColor, teamBackgroundColor, defaultColors)
 from buildIndex import (buildIndex)
+from datetime import date
+from datetime import time
+from datetime import datetime
 
 db = firestore.Client(project='evcon-app')
 
@@ -338,6 +341,9 @@ def populateLeagueSeason(countryCode, countryDisplay, leagueID, leagueDisplay, s
 
 
 def backPopulate():
+
+    today = datetime.today()
+
     for country in countryLeagues:
         for league in country["leagues"]:
             leagueID = league["id"]
@@ -354,7 +360,11 @@ def backPopulate():
             leagues = collections.defaultdict(list)
 
             for season in data["response"][0]["seasons"]:
-                populateLeagueSeason(country["code"], country["display"], league["id"], league["display"], season["year"])
+
+                #The API sometimes gives creates seasons before they start.  Ignore them.
+                seasonStart = datetime.strptime(season["start"], "%Y-%m-%d")
+                if (seasonStart < today):
+                    populateLeagueSeason(country["code"], country["display"], league["id"], league["display"], season["year"])
 
     buildIndex()
 
