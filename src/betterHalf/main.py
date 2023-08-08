@@ -4,8 +4,6 @@ import collections
 from google.cloud import firestore
 from google.cloud import secretmanager
 from datetime import datetime
-from colors import (teamBorderColor, teamBackgroundColor, defaultColors)
-from buildIndex import (buildIndex)
 import datetime
 from datetime import date
 from datetime import timedelta
@@ -28,7 +26,16 @@ headers = {
 
 
 def getGamesForRequest(request):
-    request_json = request.get_json()
+
+    # I feel like I'm doing this wrong
+    request_json = {'countryCode': request.get_json().get('countryCode'),
+                    'leagueID': request.get_json().get('leagueID'), 
+                    'seasonID': request.get_json().get('seasonID'),
+                    'startDate': request.get_json().get('startDate'),
+                    'endDate': request.get_json().get('endDate'),
+                    'timezone': request.get_json().get('timezone')}
+
+
     getGamesForDateRange(request_json)
 
 

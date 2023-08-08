@@ -36,6 +36,42 @@ resource "google_cloudfunctions_function" "populateTodaysLeagues" {
     entry_point           = "populateTodaysLeagues"
 }
 
+# Create a cloudFunction for betterHalf.py
+data "archive_file" "source_betterHalf" {
+    type        = "zip"
+    source_dir  = "../src/betterHalf"
+    output_path = "./tmp/betterHalf.zip"
+}
+
+resource "google_storage_bucket_object" "zip_betterHalf" {
+    source       = data.archive_file.source_betterHalf.output_path
+    content_type = "application/zip"
+
+    name         = "src-${data.archive_file.source_betterHalf.output_md5}.zip"
+    bucket       = google_storage_bucket.function_bucket.name
+}
+
+resource "google_cloudfunctions_function" "betterHalf" {
+    name                  = "betterHalf"
+    runtime               = "python39"
+    trigger_http          = true
+
+    source_archive_bucket = google_storage_bucket.function_bucket.name
+    source_archive_object = google_storage_bucket_object.zip_betterHalf.name
+
+    entry_point           = "getGamesForRequest"
+}
+
+# make betterHalf publicly available
+resource "google_cloudfunctions_function_iam_binding" "betterHalfPublicAccess" {
+  project = google_cloudfunctions_function.betterHalf.project
+  region = google_cloudfunctions_function.betterHalf.region
+  cloud_function = google_cloudfunctions_function.betterHalf.name
+  role = "roles/cloudfunctions.invoker"
+  members = [
+    "allUsers",
+  ]
+}
 
 resource "google_service_account" "cloudfunction_service_account" {
   account_id           = "cloudfunction-service-account"
