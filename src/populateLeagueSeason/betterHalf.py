@@ -73,16 +73,15 @@ def getGamesForDate(countryCode, leagueID, season, date, timezone):
     if dateGames.exists:
         print ("found " + date)
 
-        return dateGames.to_dict()
+        return dateGames.to_dict()["games"]
     else:
 
+        requestString = "/v3/fixtures?league=" + str(leagueID) + "&season=" + str(season) + "&date=" + date + "&timezone=" + timezone
+
         # get the games for the date
-        conn.request("GET", "/v3/fixtures?league=" + str(leagueID) + 
-                                        "&season=" + str(season) + 
-                                        "&from=" + date +
-                                        "&to=" + date +
-                                        "&timezone" + timezone
-                                        , headers=headers)
+        conn.request("GET", requestString, headers=headers)
+
+        print ("request: " + requestString)
 
         
         res = conn.getresponse()
@@ -97,6 +96,8 @@ def getGamesForDate(countryCode, leagueID, season, date, timezone):
         for fixture in response:
             homeTeam = fixture["teams"]["home"]["name"]
             awayTeam = fixture["teams"]["away"]["name"]
+
+            print (homeTeam + " vs " + awayTeam)
 
             #strip the trailing W that FOOTBALL-API adds to NWSL teams.  Fuck the patriarchy!
             homeTeam = homeTeam.rstrip(' W')
@@ -119,27 +120,35 @@ def getGamesForDate(countryCode, leagueID, season, date, timezone):
 
             games.append(game)
 
-        print ("storing " + games)
+
+        data = {}
+        data["games"] = games
+
+        print ("storing " + json.dumps(data, indent=2))
 
         # store the games in the firebase DB
         db.collection("countries/" + countryCode + 
                               "/leagues/" + str(leagueID) + 
                               "/seasons/" + str(season) + 
-                              "/games").document(str(date)).set(games)
+                              "/games").document(str(date)).set(data)
         
         return data
         
             
 
 
-request_json = {'countryCode': 'US', 
+request_json = {'countryCode': 'us', 
                 'leagueID': 254, 
                 'seasonID': 2023, 
                 'startDate': '2023-07-01', 
-                'endDate': '2023-07-15', 
+                'endDate': '2023-07-16', 
                 'timezone': 'America/New_York'}
 
 
 
 
-getGamesForDateRange(request_json)
+games = getGamesForDateRange(request_json)
+
+print (json.dumps(games, indent=2))
+
+
