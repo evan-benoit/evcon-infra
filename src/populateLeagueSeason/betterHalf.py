@@ -127,7 +127,7 @@ def getGamesForDate(countryCode, leagueID, season, date, timezone):
         data["games"] = games
 
         # cache the results in firebase, unless it's today's date (since there may still be games in progress)
-        if (datetime.strptime(date, "%Y-%m-%d") != datetime.today()):
+        if (date != datetime.datetime.today().strftime('%Y-%m-%d')):
             print ("storing " + json.dumps(data, indent=2))
 
             # store the games in the firebase DB
@@ -144,8 +144,8 @@ def getGamesForDate(countryCode, leagueID, season, date, timezone):
 request_json = {'countryCode': 'us', 
                 'leagueID': 254, 
                 'seasonID': 2023, 
-                'startDate': '2023-06-10', 
-                'endDate': '2023-07-17', 
+                'startDate': '2023-08-01', 
+                'endDate': '2023-08-08', 
                 'timezone': 'America/New_York'}
 
 
