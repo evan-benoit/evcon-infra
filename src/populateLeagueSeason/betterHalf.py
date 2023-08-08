@@ -52,7 +52,7 @@ def getGamesForDateRange(request_json):
     indexDate = startDate
     while indexDate <= endDate:
         # get the games for the date, and append them to games
-        games.append(getGamesForDate(countryCode, leagueID, season, str(indexDate), timezone))
+        games += getGamesForDate(countryCode, leagueID, season, str(indexDate), timezone)
         # increment the date by 1 day
         indexDate = indexDate + timedelta(days=1) 
 
@@ -71,9 +71,11 @@ def getGamesForDate(countryCode, leagueID, season, date, timezone):
 
     # if we have the games in the database, return them unless we're querying for today
     if dateGames.exists:
-        print ("found " + date)
+        response = dateGames.to_dict()
 
-        return dateGames.to_dict()["games"]
+        gamesArray = response['games']
+
+        return gamesArray
     else:
 
         requestString = "/v3/fixtures?league=" + str(leagueID) + "&season=" + str(season) + "&date=" + date + "&timezone=" + timezone
@@ -132,7 +134,7 @@ def getGamesForDate(countryCode, leagueID, season, date, timezone):
                               "/seasons/" + str(season) + 
                               "/games").document(str(date)).set(data)
         
-        return data
+        return games
         
             
 
@@ -140,8 +142,8 @@ def getGamesForDate(countryCode, leagueID, season, date, timezone):
 request_json = {'countryCode': 'us', 
                 'leagueID': 254, 
                 'seasonID': 2023, 
-                'startDate': '2023-07-01', 
-                'endDate': '2023-07-16', 
+                'startDate': '2023-06-10', 
+                'endDate': '2023-07-17', 
                 'timezone': 'America/New_York'}
 
 
@@ -149,6 +151,5 @@ request_json = {'countryCode': 'us',
 
 games = getGamesForDateRange(request_json)
 
-print (json.dumps(games, indent=2))
-
+print (games)
 
