@@ -41,17 +41,6 @@ def getGamesForRequest(request):
     # get the timezone from the request
     timezone = request.args.get('timezone')
 
-
-    # I feel like I'm doing this wrong
-    request_json = {'countryCode': countryCode,
-                    'leagueID': leagueID,
-                    'seasonID': season,
-                    'startDate': startDate,
-                    'endDate': endDate,
-                    'timezone': timezone
-                    }
-
-
     games = getGamesForDateRange(countryCode, leagueID, season, startDate, endDate, timezone)
 
     # return a flask response with the games
