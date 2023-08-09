@@ -28,6 +28,20 @@ headers = {
 @functions_framework.http
 def getGamesForRequest(request):
 
+    # https://cloud.google.com/functions/docs/writing/write-http-functions#cors
+    if request.method == "OPTIONS":
+        # Allows GET requests from any origin with the Content-Type
+        # header and caches preflight response for an 3600s
+        headers = {
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "GET",
+            "Access-Control-Allow-Headers": "Content-Type",
+            "Access-Control-Max-Age": "3600",
+        }
+
+        return ("", 204, headers)
+
+
     # get the countryCode from the request
     countryCode = request.args.get('countryCode')
     # get the leagueID from the request
@@ -44,7 +58,7 @@ def getGamesForRequest(request):
     games = getGamesForDateRange(countryCode, leagueID, season, startDate, endDate, timezone)
 
     # return a flask response with the games
-    return (json.dumps(games), 200, {'Content-Type': 'application/json'})
+    return (json.dumps(games), 200, {'Content-Type': 'application/json', "Access-Control-Allow-Origin": "*"})
 
 
 
@@ -101,6 +115,7 @@ def getGamesForDate(countryCode, leagueID, season, date, timezone):
         games = []
         # loop through the fixtures
         for fixture in response:
+            fixtureID = fixture["fixture"]["id"]
             homeTeam = fixture["teams"]["home"]["name"]
             awayTeam = fixture["teams"]["away"]["name"]
 
@@ -117,7 +132,9 @@ def getGamesForDate(countryCode, leagueID, season, date, timezone):
             awayFinalScore = int(fixture["score"]["fulltime"]["away"])
 
             # put these variables in a dictionary
-            game = {'homeTeam': homeTeam,
+            game = {'date' : date,
+                    'fixtureID': fixtureID,
+                    'homeTeam': homeTeam,
                     'awayTeam': awayTeam,
                     'homeHalftimeScore': homeHalftimeScore,
                     'awayHalftimeScore': awayHalftimeScore,
