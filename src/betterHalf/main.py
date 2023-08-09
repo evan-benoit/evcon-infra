@@ -7,6 +7,7 @@ from datetime import datetime
 import datetime
 from datetime import date
 from datetime import timedelta
+import functions_framework
 
 
 
@@ -24,34 +25,42 @@ headers = {
     'X-RapidAPI-Host': "api-football-v1.p.rapidapi.com"
     }
 
-
+@functions_framework.http
 def getGamesForRequest(request):
 
-    # I feel like I'm doing this wrong
-    request_json = {'countryCode': request.get_json().get('countryCode'),
-                    'leagueID': request.get_json().get('leagueID'), 
-                    'seasonID': request.get_json().get('seasonID'),
-                    'startDate': request.get_json().get('startDate'),
-                    'endDate': request.get_json().get('endDate'),
-                    'timezone': request.get_json().get('timezone')}
-
-
-    getGamesForDateRange(request_json)
-
-
-def getGamesForDateRange(request_json):
     # get the countryCode from the request
-    countryCode = request_json['countryCode']
+    countryCode = request.args.get('countryCode')
     # get the leagueID from the request
-    leagueID = request_json['leagueID']
+    leagueID = request.args.get('leagueID')
     # get the seasonID from the request
-    season = request_json['seasonID']
+    season = request.args.get('seasonID')
     # get the startDate from the request, and convert it into a date object
-    startDate = datetime.datetime.strptime(request_json['startDate'], '%Y-%m-%d').date()    
+    startDate = datetime.datetime.strptime(request.args.get('startDate'), '%Y-%m-%d').date()
     # get the endDate from the request
-    endDate = datetime.datetime.strptime(request_json['endDate'], '%Y-%m-%d').date()    
+    endDate = datetime.datetime.strptime(request.args.get('endDate'), '%Y-%m-%d').date()
     # get the timezone from the request
-    timezone = request_json['timezone']
+    timezone = request.args.get('timezone')
+
+
+    # I feel like I'm doing this wrong
+    request_json = {'countryCode': countryCode,
+                    'leagueID': leagueID,
+                    'seasonID': season,
+                    'startDate': startDate,
+                    'endDate': endDate,
+                    'timezone': timezone
+                    }
+
+
+    games = getGamesForDateRange(countryCode, leagueID, season, startDate, endDate, timezone)
+
+    # return a flask response with the games
+    return (json.dumps(games), 200, {'Content-Type': 'application/json'})
+
+
+
+
+def getGamesForDateRange(countryCode, leagueID, season, startDate, endDate, timezone):
 
     # create an empty array for the games
     games = []
@@ -64,7 +73,7 @@ def getGamesForDateRange(request_json):
         indexDate = indexDate + timedelta(days=1) 
 
     # return a json object with the games
-    return json.dumps(games) 
+    return games 
 
 
 def getGamesForDate(countryCode, leagueID, season, date, timezone):
@@ -148,17 +157,13 @@ def getGamesForDate(countryCode, leagueID, season, date, timezone):
             
 
 
-request_json = {'countryCode': 'us', 
-                'leagueID': 254, 
-                'seasonID': 2023, 
-                'startDate': '2023-08-01', 
-                'endDate': '2023-08-08', 
-                'timezone': 'America/New_York'}
 
+# games = getGamesForDateRange('us', 
+#                              254, 
+#                              2023, 
+#                              datetime.datetime.strptime('2023-08-01', '%Y-%m-%d').date(), 
+#                              datetime.datetime.strptime('2023-08-08', '%Y-%m-%d').date(), 
+#                              'America/New_York')
 
-
-
-games = getGamesForDateRange(request_json)
-
-print (games)
+# print (games)
 

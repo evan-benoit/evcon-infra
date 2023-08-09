@@ -3,3 +3,4 @@
 google-cloud-firestore
 datetime
 google-cloud-secret-manager
+functions-framework==3.*

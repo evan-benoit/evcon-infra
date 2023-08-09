@@ -22,3 +22,4 @@ tf/pagerduty/.terraform/providers/registry.terraform.io/pagerduty/pagerduty/2.2.
 tf/pagerduty/.terraform/providers/registry.terraform.io/pagerduty/pagerduty/2.2.1/darwin_arm64/README.md
 tf/pagerduty/.terraform/providers/registry.terraform.io/pagerduty/pagerduty/2.2.1/darwin_arm64/terraform-provider-pagerduty_v2.2.1
 tf/pagerduty/.terraform.lock.hcl
+tf/tmp/betterHalf.zip
