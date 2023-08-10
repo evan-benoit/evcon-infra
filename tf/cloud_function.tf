@@ -59,6 +59,8 @@ resource "google_cloudfunctions_function" "betterHalf" {
     source_archive_bucket = google_storage_bucket.function_bucket.name
     source_archive_object = google_storage_bucket_object.zip_betterHalf.name
 
+    min_instances         = 1
+    max_instances         = 10
     entry_point           = "getGamesForRequest"
 }
 
