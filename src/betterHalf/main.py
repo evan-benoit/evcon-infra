@@ -54,6 +54,36 @@ def getGamesForRequest(request):
     # get the timezone from the request
     timezone = request.args.get('timezone')
 
+    # sanitize the inputs
+    if (countryCode == None or leagueID == None or startDate == None or endDate == None or timezone == None):
+        return ("Invalid request", 400, {'Content-Type': 'application/json', "Access-Control-Allow-Origin": "*"})
+    if (countryCode != 'us' and countryCode != 'uk'):
+        return ("Invalid request", 400, {'Content-Type': 'application/json', "Access-Control-Allow-Origin": "*"})
+    # if leagueID is not an integer, return an error
+    if (not leagueID.isdigit()):
+        return ("Invalid request", 400, {'Content-Type': 'application/json', "Access-Control-Allow-Origin": "*"})
+    # if startDate is not a date, return an error
+    if (not isinstance(startDate, date)):
+        return ("Invalid request", 400, {'Content-Type': 'application/json', "Access-Control-Allow-Origin": "*"})
+    # if endDate is not a date, return an error
+    if (not isinstance(endDate, date)):
+        return ("Invalid request", 400, {'Content-Type': 'application/json', "Access-Control-Allow-Origin": "*"})
+    # if timezone is not a string with the format word slash word, return an error
+    if (not isinstance(timezone, str) or len(timezone.split('/')) != 2):
+        return ("Invalid request", 400, {'Content-Type': 'application/json', "Access-Control-Allow-Origin": "*"})
+    # if startDate is after endDate, return an error
+    if (startDate > endDate):
+        return ("Invalid request", 400, {'Content-Type': 'application/json', "Access-Control-Allow-Origin": "*"})
+    # if startDate is after today, return an error
+    if (startDate > datetime.datetime.today().date()):
+        return ("Invalid request", 400, {'Content-Type': 'application/json', "Access-Control-Allow-Origin": "*"})
+    # if endDate is after today, return an error
+    if (endDate > datetime.datetime.today().date()):
+        return ("Invalid request", 400, {'Content-Type': 'application/json', "Access-Control-Allow-Origin": "*"})
+    
+    
+    
+
     games = getGamesForDateRange(countryCode, leagueID, startDate, endDate, timezone)
 
     # return a flask response with the games
