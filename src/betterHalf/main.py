@@ -33,7 +33,8 @@ def getGamesForRequest(request):
         # Allows GET requests from any origin with the Content-Type
         # header and caches preflight response for an 3600s
         headers = {
-            "Access-Control-Allow-Origin": "*",
+            # allow requests from trophypace.com and localhost
+            "Access-Control-Allow-Origin": "https://trophypace.com, http://localhost:1234",
             "Access-Control-Allow-Methods": "GET",
             "Access-Control-Allow-Headers": "Content-Type",
             "Access-Control-Max-Age": "3600",
