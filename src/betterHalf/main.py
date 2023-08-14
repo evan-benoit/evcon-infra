@@ -54,6 +54,8 @@ def getGamesForRequest(request):
     # get the timezone from the request
     timezone = request.args.get('timezone')
 
+    print ("received request for " + countryCode + " " + str(leagueID) + " " + str(startDate) + " " + str(endDate) + " " + timezone)
+
     # sanitize the inputs
     if (countryCode == None or leagueID == None or startDate == None or endDate == None or timezone == None):
         return ("Invalid request", 400, {'Content-Type': 'application/json', "Access-Control-Allow-Origin": "*"})
@@ -118,6 +120,8 @@ def getGamesForDate(countryCode, leagueID, date, timezone):
 
     # if we have the games in the database, return them unless we're querying for today
     if dateGames.exists:
+        print ("retrieving: " + countryCode + " " + str(leagueID) + " " + str(date))
+
         response = dateGames.to_dict()
 
         gamesArray = response['games']
@@ -136,11 +140,11 @@ def getGamesForDate(countryCode, leagueID, date, timezone):
         for year in years:
 
             requestString = "/v3/fixtures?league=" + str(leagueID) + "&season=" + year + "&date=" + date + "&timezone=" + timezone
+            print ("requesting: " + requestString)
 
             # get the games for the date
             conn.request("GET", requestString, headers=headers)
 
-            print ("request: " + requestString)
 
             res = conn.getresponse()
             data = res.read()
@@ -155,7 +159,7 @@ def getGamesForDate(countryCode, leagueID, date, timezone):
                 homeTeam = fixture["teams"]["home"]["name"]
                 awayTeam = fixture["teams"]["away"]["name"]
 
-                print (homeTeam + " vs " + awayTeam)
+                print ("processing " + homeTeam + " vs " + awayTeam)
 
                 #strip the trailing W that FOOTBALL-API adds to NWSL teams.  Fuck the patriarchy!
                 homeTeam = homeTeam.rstrip(' W')
@@ -186,7 +190,7 @@ def getGamesForDate(countryCode, leagueID, date, timezone):
 
         # cache the results in firebase, unless it's today's date (since there may still be games in progress)
         if (date != datetime.datetime.today().strftime('%Y-%m-%d')):
-            print ("storing " + json.dumps(data, indent=2))
+            # print ("storing " + json.dumps(data, indent=2))
 
             # store the games in the firebase DB
             db.collection("countries/" + countryCode + 
