@@ -18,7 +18,6 @@ secretClient = secretmanager.SecretManagerServiceClient()
 secretName = f"projects/evcon-app/secrets/football-api-key/versions/latest"
 response = secretClient.access_secret_version(name=secretName)
 footballAPIKey = response.payload.data.decode('UTF-8')
-conn = http.client.HTTPSConnection("api-football-v1.p.rapidapi.com")
 
 headers = {
     'X-RapidAPI-Key': footballAPIKey,
@@ -138,6 +137,7 @@ def getGamesForDate(countryCode, leagueID, date, timezone):
         games = []
 
         for year in years:
+            conn = http.client.HTTPSConnection("api-football-v1.p.rapidapi.com")
 
             requestString = "/v3/fixtures?league=" + str(leagueID) + "&season=" + year + "&date=" + date + "&timezone=" + timezone
             print ("requesting: " + requestString)
