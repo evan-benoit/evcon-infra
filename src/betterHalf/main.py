@@ -136,6 +136,8 @@ def getGamesForDate(countryCode, leagueID, date, timezone):
         # create an empty array for the games
         games = []
 
+        numberMatches = 0
+
         for year in years:
             conn = http.client.HTTPSConnection("api-football-v1.p.rapidapi.com")
 
@@ -155,6 +157,8 @@ def getGamesForDate(countryCode, leagueID, date, timezone):
 
             # loop through the fixtures
             for fixture in response:
+                numberMatches += 1
+
                 fixtureID = fixture["fixture"]["id"]
                 homeTeam = fixture["teams"]["home"]["name"]
                 awayTeam = fixture["teams"]["away"]["name"]
@@ -188,8 +192,8 @@ def getGamesForDate(countryCode, leagueID, date, timezone):
         data = {}
         data["games"] = games
 
-        # cache the results in firebase, unless it's today's date (since there may still be games in progress)
-        if (date != datetime.datetime.today().strftime('%Y-%m-%d')):
+        # cache the results in firebase, unless it's today's date and there are matches (since there may still be games in progress)
+        if not (date == datetime.datetime.today().strftime('%Y-%m-%d') and numberMatches > 0):
             # print ("storing " + json.dumps(data, indent=2))
 
             # store the games in the firebase DB
