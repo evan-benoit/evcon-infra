@@ -163,17 +163,20 @@ def getGamesForDate(countryCode, leagueID, date, timezone):
                 homeTeam = fixture["teams"]["home"]["name"]
                 awayTeam = fixture["teams"]["away"]["name"]
 
-                print ("processing " + homeTeam + " vs " + awayTeam)
+                print ("processing " + homeTeam + " vs " + awayTeam + " " + str(fixtureID))
 
                 #strip the trailing W that FOOTBALL-API adds to NWSL teams.  Fuck the patriarchy!
                 homeTeam = homeTeam.rstrip(' W')
                 awayTeam = awayTeam.rstrip(' W')
 
-                homeHalftimeScore = int(fixture["score"]["halftime"]["home"])
-                awayHalftimeScore = int(fixture["score"]["halftime"]["away"])
+                try:
+                    homeHalftimeScore = int(fixture["score"]["halftime"]["home"])
+                    awayHalftimeScore = int(fixture["score"]["halftime"]["away"])
 
-                homeFinalScore = int(fixture["score"]["fulltime"]["home"])
-                awayFinalScore = int(fixture["score"]["fulltime"]["away"])
+                    homeFinalScore = int(fixture["score"]["fulltime"]["home"])
+                    awayFinalScore = int(fixture["score"]["fulltime"]["away"])
+                except:
+                    continue;
 
                 # put these variables in a dictionary
                 game = {'date' : date,
@@ -207,11 +210,11 @@ def getGamesForDate(countryCode, leagueID, date, timezone):
 
 
 
-# games = getGamesForDateRange('us', 
-#                              254, 
-#                              datetime.datetime.strptime('2023-07-01', '%Y-%m-%d').date(), 
-#                              datetime.datetime.strptime('2023-07-08', '%Y-%m-%d').date(), 
-#                              'America/New_York')
+games = getGamesForDateRange('uk', 
+                             39, 
+                             datetime.datetime.strptime('2023-08-15', '%Y-%m-%d').date(), 
+                             datetime.datetime.strptime('2023-08-20', '%Y-%m-%d').date(), 
+                             'Europe/London')
 
-# print (games)
+print (games)
 
