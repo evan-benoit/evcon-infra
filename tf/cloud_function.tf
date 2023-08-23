@@ -75,6 +75,48 @@ resource "google_cloudfunctions_function_iam_binding" "betterHalfPublicAccess" {
   ]
 }
 
+
+# Create a cloudFunction for getIndex.py
+data "archive_file" "source_getIndex" {
+    type        = "zip"
+    source_dir  = "../src/getIndex"
+    output_path = "./tmp/getIndex.zip"
+}
+
+resource "google_storage_bucket_object" "zip_getIndex" {
+    source       = data.archive_file.source_getIndex.output_path
+    content_type = "application/zip"
+
+    name         = "src-${data.archive_file.source_getIndex.output_md5}.zip"
+    bucket       = google_storage_bucket.function_bucket.name
+}
+
+resource "google_cloudfunctions_function" "getIndex" {
+    name                  = "getIndex"
+    runtime               = "python39"
+    trigger_http          = true
+
+    source_archive_bucket = google_storage_bucket.function_bucket.name
+    source_archive_object = google_storage_bucket_object.zip_getIndex.name
+
+    min_instances         = 1
+    max_instances         = 10
+    entry_point           = "getIndex"
+}
+
+# make getIndex publicly available
+resource "google_cloudfunctions_function_iam_binding" "getIndexPublicAccess" {
+  project = google_cloudfunctions_function.getIndex.project
+  region = google_cloudfunctions_function.getIndex.region
+  cloud_function = google_cloudfunctions_function.getIndex.name
+  role = "roles/cloudfunctions.invoker"
+  members = [
+    "allUsers",
+  ]
+}
+
+
+
 resource "google_service_account" "cloudfunction_service_account" {
   account_id           = "cloudfunction-service-account"
   display_name         = "Cloud Function service account"

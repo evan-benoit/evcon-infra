@@ -1,0 +1,6 @@
+# Function dependencies, for example:
+# package>=version
+google-cloud-firestore
+datetime
+google-cloud-secret-manager
+functions-framework==3.*
