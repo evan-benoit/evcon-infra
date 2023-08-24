@@ -115,6 +115,44 @@ resource "google_cloudfunctions_function_iam_binding" "getIndexPublicAccess" {
   ]
 }
 
+# Create a cloudFunction for getSeason
+data "archive_file" "source_getSeason" {
+    type        = "zip"
+    source_dir  = "../src/getSeason"
+    output_path = "./tmp/getSeason.zip"
+}
+
+resource "google_storage_bucket_object" "zip_getSeason" {
+    source       = data.archive_file.source_getSeason.output_path
+    content_type = "application/zip"
+
+    name         = "src-${data.archive_file.source_getSeason.output_md5}.zip"
+    bucket       = google_storage_bucket.function_bucket.name
+}
+
+resource "google_cloudfunctions_function" "getSeason" {
+    name                  = "getSeason"
+    runtime               = "python39"
+    trigger_http          = true
+
+    source_archive_bucket = google_storage_bucket.function_bucket.name
+    source_archive_object = google_storage_bucket_object.zip_getSeason.name
+
+    min_instances         = 1
+    max_instances         = 10
+    entry_point           = "getSeason"
+}
+
+# make getSeason publicly available
+resource "google_cloudfunctions_function_iam_binding" "getSeasonPublicAccess" {
+  project = google_cloudfunctions_function.getSeason.project
+  region = google_cloudfunctions_function.getSeason.region
+  cloud_function = google_cloudfunctions_function.getSeason.name
+  role = "roles/cloudfunctions.invoker"
+  members = [
+    "allUsers",
+  ]
+}
 
 
 resource "google_service_account" "cloudfunction_service_account" {

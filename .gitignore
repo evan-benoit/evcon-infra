@@ -24,3 +24,4 @@ tf/pagerduty/.terraform/providers/registry.terraform.io/pagerduty/pagerduty/2.2.
 tf/pagerduty/.terraform.lock.hcl
 tf/tmp/betterHalf.zip
 tf/tmp/getIndex.zip
+tf/tmp/getSeason.zip
