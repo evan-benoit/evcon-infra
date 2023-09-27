@@ -94,4 +94,17 @@ resource "google_service_account" "service_account" {
   display_name = "Service Account"
 }
 
+resource "google_service_account" "circleci_service_account" {
+  project      = var.project_id
+  account_id   = "circleci-service-account"
+  display_name = "CircleCIService Account"
+}
 
+
+
+# add a service account that can write to google artifact registry
+resource "google_project_iam_member" "service_account_storage" {
+  project = var.project_id
+  role    = "roles/artifactregistry.writer"
+  member  = "serviceAccount:${google_service_account.circleci_service_account.email}"
+}
