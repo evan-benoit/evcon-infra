@@ -93,7 +93,7 @@ def getGamesForRequest(request):
 
 
 
-def getGamesForDateRange(countryCode, leagueID, startDate, endDate, timezone):
+def getGamesForDateRange(countryCode, leagueID, startDate, endDate, timezone, cacheBuster = False):    
 
     # create an empty array for the games
     games = []
@@ -101,7 +101,7 @@ def getGamesForDateRange(countryCode, leagueID, startDate, endDate, timezone):
     indexDate = startDate
     while indexDate <= endDate:
         # get the games for the date, and append them to games
-        games += getGamesForDate(countryCode, leagueID, str(indexDate), timezone)
+        games += getGamesForDate(countryCode, leagueID, str(indexDate), timezone, cacheBuster)
         # increment the date by 1 day
         indexDate = indexDate + timedelta(days=1) 
 
@@ -109,7 +109,7 @@ def getGamesForDateRange(countryCode, leagueID, startDate, endDate, timezone):
     return games 
 
 
-def getGamesForDate(countryCode, leagueID, date, timezone):
+def getGamesForDate(countryCode, leagueID, date, timezone, cacheBuster = False):
 
 
     # See if we have the games for that league, date in the database
@@ -117,8 +117,8 @@ def getGamesForDate(countryCode, leagueID, date, timezone):
                               "/leagues/" + str(leagueID) + 
                               "/games").document(str(date)).get() 
 
-    # if we have the games in the database, return them unless we're querying for today
-    if dateGames.exists:
+    # if we have the games in the database, return them unless we're querying for today and/or cacheBuster is true
+    if dateGames.exists and not cacheBuster:
         print ("retrieving: " + countryCode + " " + str(leagueID) + " " + str(date))
 
         response = dateGames.to_dict()
@@ -217,13 +217,14 @@ parser.add_argument("leagueID", help="the league ID")
 parser.add_argument("startDate", help="the start date")
 parser.add_argument("endDate", help="the end date")
 parser.add_argument("timezone", help="the timezone")
+parser.add_argument("--cacheBuster", help="whether to ignore the cache", action="store_true", default=False)
 args = parser.parse_args()
 
 # parse the startDate and endDate into a date object
 args.startDate = datetime.datetime.strptime(args.startDate, '%Y-%m-%d').date()
 args.endDate = datetime.datetime.strptime(args.endDate, '%Y-%m-%d').date()
 
-games = getGamesForDateRange(args.countryCode, args.leagueID, args.startDate, args.endDate, args.timezone)
+games = getGamesForDateRange(args.countryCode, args.leagueID, args.startDate, args.endDate, args.timezone, args.cacheBuster)
 
 print (games)
 
