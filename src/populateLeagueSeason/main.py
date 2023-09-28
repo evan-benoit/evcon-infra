@@ -370,6 +370,22 @@ def backPopulate():
     buildIndex()
 
 
-# populateTodaysLeagues(None)
-# backPopulate()
-# buildIndex()
+# Read the command line args, run the command specified
+if __name__ == "__main__":
+    import argparse
+
+    parser = argparse.ArgumentParser(description='Populate the league season data')
+    parser.add_argument('--backpopulate', action='store_true', help='Backpopulate all seasons for all leagues')
+    parser.add_argument('--buildindex', action='store_true', help='Build the index')
+    parser.add_argument('--populateTodaysLeagues', action='store_true', help='Populate todays leagues')
+
+    args = parser.parse_args()
+
+    if args.backpopulate:
+        backPopulate()
+    elif args.buildindex:
+        buildIndex()
+    elif args.populateTodaysLeagues:
+        populateTodaysLeagues(None)
+    else:
+        print ("No command specified.  Use --backpopulate, --buildindex, pr --populate")
