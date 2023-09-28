@@ -371,5 +371,5 @@ def backPopulate():
 
 
 # populateTodaysLeagues(None)
-backPopulate()
+# backPopulate()
 # buildIndex()
