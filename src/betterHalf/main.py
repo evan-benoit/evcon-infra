@@ -177,6 +177,22 @@ def getGamesForDate(countryCode, leagueID, date, timezone, cacheBuster = False):
                     awayFinalScore = int(fixture["score"]["fulltime"]["away"])
                 except:
                     continue;
+                
+                # Edge-case!  Could the game have been a near comeback?
+                # Look for games where the winner was winning at half, but the loser's final score was equal or greater to the
+                # winner's score at halftime.  We'll need to check to see if the loser tied up the game in the second half
+                # by looking at the game goal-by-goal
+                nearComeback = False
+                if ((homeFinalScore > awayFinalScore 
+                     and homeHalftimeScore > awayHalftimeScore 
+                     and awayFinalScore >= homeHalftimeScore) 
+                    or 
+                    (awayFinalScore > homeFinalScore 
+                     and awayHalftimeScore > homeHalftimeScore 
+                     and homeFinalScore >= awayHalftimeScore)):
+                    nearComeback = checkForNearComeback(fixtureID, homeTeam, awayTeam)
+            
+
 
                 # put these variables in a dictionary
                 game = {'date' : date,
@@ -186,7 +202,8 @@ def getGamesForDate(countryCode, leagueID, date, timezone, cacheBuster = False):
                         'homeHalftimeScore': homeHalftimeScore,
                         'awayHalftimeScore': awayHalftimeScore,
                         'homeFinalScore': homeFinalScore,
-                        'awayFinalScore': awayFinalScore,                
+                        'awayFinalScore': awayFinalScore,  
+                        'nearComback': nearComeback              
                 }
 
                 games.append(game)
@@ -206,6 +223,47 @@ def getGamesForDate(countryCode, leagueID, date, timezone, cacheBuster = False):
             
         return games
         
+def checkForNearComeback(fixtureID, homeTeam, awayTeam):
+
+    print ("checking for near comeback")   
+
+    conn = http.client.HTTPSConnection("api-football-v1.p.rapidapi.com")
+
+    requestString = "/v3/fixtures/events?fixture=" + str(fixtureID)
+
+    conn.request("GET", requestString, headers=headers)
+
+    res = conn.getresponse()
+    data = res.read()
+    # convert the response to a json object
+    data = json.loads(data.decode("utf-8"))
+    # get the fixtures from the response
+    response = data['response']
+
+    score = {"home": 0, "away": 0}
+
+    # loop through the events in the response
+    for event in response:
+        if (event['type'] == 'Goal'):
+            # get the name of the team that scored
+            teamName = event['team']['name']
+            # if it was the home team, increment the home score
+            if (teamName == homeTeam):
+                score['home'] += 1
+            # if it was the away team, increment the away score
+            elif (teamName == awayTeam):
+                score['away'] += 1
+
+            # get the elapsed time
+            elapsed = event['time']['elapsed'] 
+
+            # if it is past the 45th minute, and the game is now tied, then it is a near comeback
+            if (elapsed > 45 and score['home'] == score['away']):
+                return True
+
+    # If the game was never tied in the second half, then it's not a near comeback
+    return False
+            
 
 
 
