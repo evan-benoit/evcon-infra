@@ -20,6 +20,16 @@
             "console": "integratedTerminal",
             "justMyCode": true,
             "args": ["--populateTodaysLeagues"]
+        },
+        {
+            "name": "Python: GetBetterHalf",
+            "type": "python",
+            "request": "launch",
+            "program": "src/betterHalf/main.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "args": ["uk", "39", "2023-09-15", "2023-09-24", "Europe/London"]
         }
+        
     ]
 }

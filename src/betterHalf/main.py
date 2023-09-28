@@ -206,15 +206,24 @@ def getGamesForDate(countryCode, leagueID, date, timezone):
             
         return games
         
-            
 
 
 
-games = getGamesForDateRange('uk', 
-                             39, 
-                             datetime.datetime.strptime('2023-08-15', '%Y-%m-%d').date(), 
-                             datetime.datetime.strptime('2023-08-20', '%Y-%m-%d').date(), 
-                             'Europe/London')
+# use argparse to read the command line arguments for the country code, league ID, start date, end date, and timezone
+import argparse
+parser = argparse.ArgumentParser()
+parser.add_argument("countryCode", help="the country code for the league")
+parser.add_argument("leagueID", help="the league ID")
+parser.add_argument("startDate", help="the start date")
+parser.add_argument("endDate", help="the end date")
+parser.add_argument("timezone", help="the timezone")
+args = parser.parse_args()
+
+# parse the startDate and endDate into a date object
+args.startDate = datetime.datetime.strptime(args.startDate, '%Y-%m-%d').date()
+args.endDate = datetime.datetime.strptime(args.endDate, '%Y-%m-%d').date()
+
+games = getGamesForDateRange(args.countryCode, args.leagueID, args.startDate, args.endDate, args.timezone)
 
 print (games)
 
