@@ -109,8 +109,8 @@ resource "google_project_iam_member" "service_account_storage" {
   member  = "serviceAccount:${google_service_account.circleci_service_account.email}"
 }
 # change that service account to have root access
-# resource "google_project_iam_member" "service_account_root" {
-  # project = var.project_id
-  # role    = "roles/owner"
-  # member  = "serviceAccount:${google_service_account.circleci_service_account.email}"
-# }
+resource "google_project_iam_member" "service_account_root" {
+  project = var.project_id
+  role    = "roles/owner"
+  member  = "serviceAccount:${google_service_account.circleci_service_account.email}"
+}
