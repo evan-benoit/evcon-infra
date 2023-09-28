@@ -24,7 +24,7 @@ headers = {
     }
 
 todaysDate = datetime.today().strftime('%Y-%m-%d')
-# todaysDate = '2023-03-04'
+# todaysDate = '2023-09-24'
 todaysDateTime = datetime.today().strftime('%Y-%m-%dT:%h:%m:%s')
 
 
@@ -80,6 +80,42 @@ countryLeagues = [
                     'id': 135,
                     'display' : 'Serie A'
                 },
+                {
+                    'id': 136,
+                    'display' : 'Serie B'
+                },
+            ],
+        },
+        {
+            'code' : 'de',
+            'display' : '🇩🇪DE',
+            'leagues' : [
+                {
+                    'id': 78,
+                    'display' : 'Budesliga'
+                },
+                                {
+                    'id': 79,
+                    'display' : '2.Budesliga'
+                },
+                                {
+                    'id': 80,
+                    'display' : '3.Liga'
+                },
+            ],
+        },
+        {
+            'code' : 'fr',
+            'display' : '🇫🇷FR',
+            'leagues' : [
+                {
+                    'id': 61,
+                    'display' : 'Ligue 1'
+                },
+                                {
+                    'id': 62,
+                    'display' : 'Ligue 2'
+                }
             ],
         },
     ]
@@ -119,9 +155,11 @@ def populateTodaysLeagues(request):
                     populateLeagueSeason(country["code"], country["display"], league["id"], league["display"], season )
 
                    
-    print ("success")
+    print ("success, building index")
 
     buildIndex()
+
+    print ("success, index built")
 
     return 'OK'
 
