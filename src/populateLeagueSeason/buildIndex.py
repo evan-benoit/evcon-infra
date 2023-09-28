@@ -10,7 +10,7 @@ index = {}
 def getCountries():
     countryCollection = db.collection("countries").stream()
     for country in countryCollection:
-        print(country.id)
+        # print(country.id)
         country_ref = db.collection("countries").document(country.id)
         country_dict = country_ref.get().to_dict()
 
@@ -24,7 +24,7 @@ def getCountries():
 def getLeagues(countryCode):
     leagueCollection = db.collection("countries/" + countryCode + "/leagues").stream()
     for league in leagueCollection:
-        print("  " + league.id)
+        # print("  " + league.id)
 
         league_ref = db.collection("countries/" + countryCode + "/leagues").document(league.id)
         league_dict = league_ref.get().to_dict()
@@ -39,7 +39,7 @@ def getLeagues(countryCode):
 def getSeasons(countryCode, leagueID):
     seasonCollection = db.collection("countries/" + countryCode + "/leagues/" + leagueID + "/seasons").stream()
     for season in seasonCollection:
-        print("    " + season.id)
+        # print("    " + season.id)
         index[countryCode]["leagues"][leagueID]["seasons"].append(season.id)
 
     
