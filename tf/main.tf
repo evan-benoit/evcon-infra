@@ -103,14 +103,14 @@ resource "google_service_account" "circleci_service_account" {
 
 
 # add a service account that can write to google artifact registry
-resource "google_project_iam_member" "service_account_storage" {
+resource "google_project_iam_member" "circleci_service_account_artifact_registry" {
   project = var.project_id
   role    = "roles/artifactregistry.writer"
   member  = "serviceAccount:${google_service_account.circleci_service_account.email}"
 }
-# change that service account to have root access
-resource "google_project_iam_member" "service_account_root" {
+# Also give that service account cluster admin access
+resource "google_project_iam_member" "circleci_service_account_cluster_admin" {
   project = var.project_id
-  role    = "roles/owner"
+  role    = "roles/container.developer"
   member  = "serviceAccount:${google_service_account.circleci_service_account.email}"
 }
