@@ -58,7 +58,8 @@ def getGamesForRequest(request):
     # sanitize the inputs
     if (countryCode == None or leagueID == None or startDate == None or endDate == None or timezone == None):
         return ("Invalid request", 400, {'Content-Type': 'application/json', "Access-Control-Allow-Origin": "*"})
-    if (countryCode != 'us' and countryCode != 'uk'):
+    #if countryCode is not a two-character string, return an error
+    if (not isinstance(countryCode, str) or len(countryCode) != 2):
         return ("Invalid request", 400, {'Content-Type': 'application/json', "Access-Control-Allow-Origin": "*"})
     # if leagueID is not an integer, return an error
     if (not leagueID.isdigit()):
@@ -268,21 +269,22 @@ def checkForNearComeback(fixtureID, homeTeam, awayTeam):
 
 
 # use argparse to read the command line arguments for the country code, league ID, start date, end date, and timezone
-import argparse
-parser = argparse.ArgumentParser()
-parser.add_argument("countryCode", help="the country code for the league")
-parser.add_argument("leagueID", help="the league ID")
-parser.add_argument("startDate", help="the start date")
-parser.add_argument("endDate", help="the end date")
-parser.add_argument("timezone", help="the timezone")
-parser.add_argument("--cacheBuster", help="whether to ignore the cache", action="store_true", default=False)
-args = parser.parse_args()
+if __name__ == "__main__":
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument("countryCode", help="the country code for the league")
+    parser.add_argument("leagueID", help="the league ID")
+    parser.add_argument("startDate", help="the start date")
+    parser.add_argument("endDate", help="the end date")
+    parser.add_argument("timezone", help="the timezone")
+    parser.add_argument("--cacheBuster", help="whether to ignore the cache", action="store_true", default=False)
+    args = parser.parse_args()
 
-# parse the startDate and endDate into a date object
-args.startDate = datetime.datetime.strptime(args.startDate, '%Y-%m-%d').date()
-args.endDate = datetime.datetime.strptime(args.endDate, '%Y-%m-%d').date()
+    # parse the startDate and endDate into a date object
+    args.startDate = datetime.datetime.strptime(args.startDate, '%Y-%m-%d').date()
+    args.endDate = datetime.datetime.strptime(args.endDate, '%Y-%m-%d').date()
 
-games = getGamesForDateRange(args.countryCode, args.leagueID, args.startDate, args.endDate, args.timezone, args.cacheBuster)
+    games = getGamesForDateRange(args.countryCode, args.leagueID, args.startDate, args.endDate, args.timezone, args.cacheBuster)
 
-print (games)
+    print (games)
 
