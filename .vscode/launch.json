@@ -22,6 +22,15 @@
             "args": ["--populateTodaysLeagues"]
         },
         {
+            "name": "Python: Populate the past 7 days' leagues",
+            "type": "python",
+            "request": "launch",
+            "program": "src/populateLeagueSeason/main.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "args": ["--populateTodaysLeagues", "--backdate", "7"]
+        },
+        {
             "name": "Python: GetBetterHalf",
             "type": "python",
             "request": "launch",

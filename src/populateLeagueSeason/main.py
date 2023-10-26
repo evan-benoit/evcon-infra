@@ -8,7 +8,7 @@ from colors import (teamBorderColor, teamBackgroundColor, defaultColors)
 from buildIndex import (buildIndex)
 from datetime import date
 from datetime import time
-from datetime import datetime
+from datetime import datetime, timedelta
 
 db = firestore.Client(project='evcon-app')
 
@@ -121,10 +121,14 @@ countryLeagues = [
     ]
 
 
-def populateTodaysLeagues(request):
+def populateTodaysLeagues(request, backdate = 0):
+    
 
     thisYear = datetime.today().year
     lastYear = datetime.today().year - 1
+
+    #take today's date and subtract backdate days
+    startDate = (datetime.today() - timedelta(days=backdate)).strftime('%Y-%m-%d')
 
     #Look at both this year and a season that started last year (e.g. if it's 2023 look at the 2022 season)
     seasons = [thisYear, lastYear]    
@@ -143,7 +147,7 @@ def populateTodaysLeagues(request):
 
             for season in seasons:
 
-                conn.request("GET", "/v3/fixtures?league=" + str(league['id']) + "&season=" + str(season) + "&from=" + todaysDate + "&to=" + todaysDate, headers=headers)
+                conn.request("GET", "/v3/fixtures?league=" + str(league['id']) + "&season=" + str(season) + "&from=" + startDate + "&to=" + todaysDate, headers=headers)
                 res = conn.getresponse()
                 rawData = res.read()
                 dateFixtures = json.loads(rawData.decode("utf-8"));
@@ -416,6 +420,7 @@ if __name__ == "__main__":
     parser.add_argument('--backpopulate', action='store_true', help='Backpopulate all seasons for all leagues')
     parser.add_argument('--buildindex', action='store_true', help='Build the index')
     parser.add_argument('--populateTodaysLeagues', action='store_true', help='Populate todays leagues')
+    parser.add_argument('--backdate', type=int, default=0, help='Backdate the populateTodaysLeagues command by this many days')
 
     args = parser.parse_args()
 
@@ -424,6 +429,6 @@ if __name__ == "__main__":
     elif args.buildindex:
         buildIndex()
     elif args.populateTodaysLeagues:
-        populateTodaysLeagues(None)
+        populateTodaysLeagues(None, args.backdate)
     else:
         print ("No command specified.  Use --backpopulate, --buildindex, pr --populate")
