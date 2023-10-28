@@ -256,3 +256,28 @@ def getBlankColorDict(leagueID, season):
 
 
 # getBlankColorDict(135, 2022)
+
+
+teamTags = {
+    #premier league
+    'Arsenal' : ['London', 'North London Derby'],
+    'Aston Villa' : [],
+    'Bournemouth' : [],
+    'Brentford' : ['London'],
+    'Brighton' : [],
+    'Chelsea' : ['London'],
+    'Crystal Palace' : ['London'],
+    'Everton' : ['Liverpool'],
+    'Fulham' : ['London'],
+    'Leeds' : [],
+    'Leicester' : [],
+    'Liverpool' : ['Liverpool'],
+    'Manchester City' : ['Manchester Derby'],
+    'Manchester United' : ['Manchester Derby'],
+    'Newcastle' : [],
+    'Nottingham Forest' : [],
+    'Southampton' : [],
+    'Tottenham' : ['London', 'North London Derby'],
+    'West Ham' : ['London'],
+    'Wolves' : [],
+}

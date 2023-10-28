@@ -4,7 +4,7 @@ import collections
 from google.cloud import firestore
 from google.cloud import secretmanager
 from datetime import datetime
-from colors import (teamBorderColor, teamBackgroundColor, defaultColors)
+from colors import (teamBorderColor, teamBackgroundColor, defaultColors, teamTags)
 from buildIndex import (buildIndex)
 from datetime import date
 from datetime import time
@@ -363,11 +363,18 @@ def populateLeagueSeason(countryCode, countryDisplay, leagueID, leagueDisplay, s
             borderColor = defaultColors[teamNumber]
             backgroundColor = defaultColors[teamNumber]
 
+        # if the team is in the tags dict, add the tags
+        if teamName in teamTags:
+            tags = teamTags[teamName]
+        else:
+            tags = []
+
 
         chartJSdata["datasets"].append({
             "label": teamName,
             "borderColor": borderColor,
             "backgroundColor": backgroundColor,
+            "tags": tags,
             "tension": 0.3,
             "stepped": True,
             "data": dataPoints
