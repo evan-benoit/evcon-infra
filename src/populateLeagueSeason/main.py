@@ -319,11 +319,18 @@ def populateLeagueSeason(countryCode, countryDisplay, leagueID, leagueDisplay, s
         #make an empty array of matches for this matchNumber
         matches = []
 
+        # maintain a list of ranks that should be skipped (e.g. if a team hasn't played a match yet, skip its rank)
+        skipRanks = []
+
         #Loop through each team key and build an array of matches for this match number
         for teamName in sorted(teamFixtures.keys()):
 
             #If this team doesn't have this match number, it means not all matches have been played for this match number yet, so break
             if (matchNumber >= len(teamFixtures[teamName])):
+
+                #append this team's latest rank to the list of ranks to skip, below
+                skipRanks.append(teamFixtures[teamName][-1]["rank"])
+
                 if (matchNumber < lastFullMatchNumber):
                     lastFullMatchNumber = matchNumber
                 continue
@@ -333,8 +340,15 @@ def populateLeagueSeason(countryCode, countryDisplay, leagueID, leagueDisplay, s
             
 
         #Sort that array using the cumulative points and tiebreakers
-        for rank, teamFixture in enumerate(sorted(matches, key=lambda d: (d['cumPoints'], d['cumDifferential'], d['cumGoals']), reverse=True)):
-            teamFixture["rank"] = rank + 1
+        rank = 1
+        for teamFixture in sorted(matches, key=lambda d: (d['cumPoints'], d['cumDifferential'], d['cumGoals']), reverse=True):
+            teamFixture["rank"] = rank
+            rank += 1
+            
+            # if this rank is in the list of ranks to skip, skip it
+            if rank in skipRanks:
+                rank += 1
+
             teamFixture["reverseRank"] = -1 * numberOfTeams + rank #the worst team has reverseRank of -1, second worse -2, etc. Used to find the "bottom five teams", etc.
             
     
