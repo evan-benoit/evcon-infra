@@ -179,8 +179,20 @@ def populateLeagueSeason(countryCode, countryDisplay, leagueID, leagueDisplay, s
 
     db.collection(u'countries').document(countryCode).set(countryJSdata)
 
+
+    # Get the league info from the API
+    conn.request("GET", "/v3/leagues?id=" + str(leagueID), headers=headers)
+
+    res = conn.getresponse()
+    rawData = res.read()
+    data = json.loads(rawData.decode("utf-8"));
+
+    logo = data["response"][0]["league"]["logo"]
+
+
     leagueJSdata = {
-        'display': leagueDisplay
+        'display': leagueDisplay,
+        'logo': logo
     }
 
     db.collection(u'countries/' + countryCode + "/leagues").document(str(leagueID)).set(leagueJSdata)

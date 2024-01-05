@@ -33,6 +33,9 @@ def getLeagues(countryCode):
         index[countryCode]["leagues"][league.id]["display"] = league_dict["display"]
         index[countryCode]["leagues"][league.id]["seasons"] = []
 
+        if "logo" in league_dict:
+            index[countryCode]["leagues"][league.id]["logo"] = league_dict["logo"]
+
         getSeasons(countryCode, league.id)
     
 
