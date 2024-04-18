@@ -1,6 +1,7 @@
 import http.client
 import json
 import collections
+import urllib.parse
 from google.cloud import firestore
 from google.cloud import secretmanager
 from datetime import datetime
@@ -420,6 +421,32 @@ def populateLeagueSeason(countryCode, countryDisplay, leagueID, leagueDisplay, s
 
     #save to firebase
     db.collection("countries/" + countryCode + "/leagues/" + str(leagueID) + "/seasons").document(str(season)).set(chartJSdata)
+
+    #if this is the premier league
+    if leagueID == 39:
+        #loop through each team in chartJSdata and generate an AI summary
+        for team in chartJSdata["datasets"]:
+            generateAISummary(countryCode, leagueID, season, team["label"], team["data"])
+
+
+def generateAISummary(countryCode, leagueID, season, teamName, data):
+    baseURL = "evcon-generate-3ljnqbebyq-ue.a.run.app"
+
+    # [evtodo] better way to do this?  Should I post this instead?
+    url = "/summary?countryCode=" + str(countryCode) + "&leagueID=" + str(leagueID) + "&season=" + str(season) + "&teamList=" + urllib.parse.quote(teamName)
+
+    print ("Generating AI summary for " + teamName + " using " + url)
+
+    generateConn = http.client.HTTPSConnection(baseURL)
+
+    # Make a REST call to the URL
+    generateConn.request("GET", url)
+    res = generateConn.getresponse()
+    rawData = res.read()
+    data = json.loads(rawData.decode("utf-8"));
+
+    # We don't actually care about the data; we just wanted the function to cache it.  So we're done here.
+
 
 
 
