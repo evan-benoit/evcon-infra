@@ -422,11 +422,9 @@ def populateLeagueSeason(countryCode, countryDisplay, leagueID, leagueDisplay, s
     #save to firebase
     db.collection("countries/" + countryCode + "/leagues/" + str(leagueID) + "/seasons").document(str(season)).set(chartJSdata)
 
-    #if this is the premier league
-    if leagueID == 39:
-        #loop through each team in chartJSdata and generate an AI summary
-        for team in chartJSdata["datasets"]:
-            generateAISummary(countryCode, leagueID, season, team["label"], team["data"])
+    #loop through each team in chartJSdata and generate an AI summary
+    for team in chartJSdata["datasets"]:
+        generateAISummary(countryCode, leagueID, season, team["label"], team["data"])
 
 
 def generateAISummary(countryCode, leagueID, season, teamName, data):
