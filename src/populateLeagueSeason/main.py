@@ -2,6 +2,7 @@ import http.client
 import json
 import collections
 import urllib.parse
+import time
 from google.cloud import firestore
 from google.cloud import secretmanager
 from datetime import datetime
@@ -375,7 +376,13 @@ def populateLeagueSeason(countryCode, countryDisplay, leagueID, leagueDisplay, s
         dataPoints.append({"timestamp": earliestTimestamp, "matchNumber": 0, "cumPoints": 0}) #add an origin-point for all teams
 
         for fixture in sorted(teamFixtures[teamName], key=lambda d: d['timestamp']):
+
+            # convert epoch timestamp to date, which will help the LLM generate a better summary
+            date = datetime.fromtimestamp(fixture["timestamp"] / 1000)
+            formatted_date = date.strftime('%d %B, %Y')
+
             dataPoints.append({"timestamp": fixture["timestamp"], 
+                            "date": formatted_date,
                             "teamName": teamName,
                             "matchNumber": fixture["matchNumber"], 
                             "cumPoints": fixture["cumPoints"],
@@ -422,9 +429,12 @@ def populateLeagueSeason(countryCode, countryDisplay, leagueID, leagueDisplay, s
     #save to firebase
     db.collection("countries/" + countryCode + "/leagues/" + str(leagueID) + "/seasons").document(str(season)).set(chartJSdata)
 
-    #loop through each team in chartJSdata and generate an AI summary
-    for team in chartJSdata["datasets"]:
-        generateAISummary(countryCode, leagueID, season, team["label"], team["data"])
+    # if it's the premier league
+    if leagueID == 39:
+
+        #loop through each team in chartJSdata and generate an AI summary
+        for team in chartJSdata["datasets"]:
+            generateAISummary(countryCode, leagueID, season, team["label"], team["data"])
 
 
 def generateAISummary(countryCode, leagueID, season, teamName, data):
