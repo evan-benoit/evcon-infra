@@ -430,7 +430,7 @@ def populateLeagueSeason(countryCode, countryDisplay, leagueID, leagueDisplay, s
     db.collection("countries/" + countryCode + "/leagues/" + str(leagueID) + "/seasons").document(str(season)).set(chartJSdata)
 
     # if it's the premier league
-    if leagueID == 39:
+    if leagueID == 39 and not args.skipgenai:
 
         #loop through each team in chartJSdata and generate an AI summary
         for team in chartJSdata["datasets"]:
@@ -496,11 +496,17 @@ if __name__ == "__main__":
     parser.add_argument('--buildindex', action='store_true', help='Build the index')
     parser.add_argument('--populateTodaysLeagues', action='store_true', help='Populate todays leagues')
     parser.add_argument('--backdate', type=int, default=0, help='Backdate the populateTodaysLeagues command by this many days')
+    parser.add_argument('--premier', action='store_true', help='Generate just the premier league (useful for debugging purposes)')
+    parser.add_argument('--skipgenai', action='store_true', default=False, help='Don''t generate AI summaries')
+
+
 
     args = parser.parse_args()
 
     if args.backpopulate:
         backPopulate()
+    elif args.premier:
+        populateLeagueSeason("uk", "🇬🇧UK", 39, "Premier League", 2023)
     elif args.buildindex:
         buildIndex()
     elif args.populateTodaysLeagues:

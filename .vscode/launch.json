@@ -31,6 +31,15 @@
             "args": ["--populateTodaysLeagues", "--backdate", "7"]
         },
         {
+            "name": "Python: Populate the premier league (no AI)",
+            "type": "python",
+            "request": "launch",
+            "program": "src/populateLeagueSeason/main.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "args": ["--premier", "--skipgenai"]
+        },
+        {
             "name": "Python: GetBetterHalf",
             "type": "python",
             "request": "launch",
