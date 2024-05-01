@@ -200,7 +200,7 @@ def populateLeagueSeason(countryCode, countryDisplay, leagueID, leagueDisplay, s
     db.collection(u'countries/' + countryCode + "/leagues").document(str(leagueID)).set(leagueJSdata)
 
 
-    conn.request("GET", "/v3/fixtures?league=" + str(leagueID) + "&season=" + str(season) + "&from=1900-01-01&to=" + todaysDate, headers=headers)
+    conn.request("GET", "/v3/fixtures?league=" + str(leagueID) + "&season=" + str(season), headers=headers)
 
     res = conn.getresponse()
     rawData = res.read()
@@ -209,7 +209,9 @@ def populateLeagueSeason(countryCode, countryDisplay, leagueID, leagueDisplay, s
 
     data = json.loads(rawData.decode("utf-8"));
 
-    teamFixtures = collections.defaultdict(list)
+    completeFixtures = collections.defaultdict(list)
+    upcomingFixtures = collections.defaultdict(list)
+
 
     # keep track of the earliest timestamp we see.  When we're done, we're going to create an "origin-point" one day before this (otherwise it looks like some teams start with three points!)
     earliestTimestamp = 9000000000000 # really far future, will stop working in 2255
@@ -218,8 +220,8 @@ def populateLeagueSeason(countryCode, countryDisplay, leagueID, leagueDisplay, s
     # loop through fixtures, build a dict of fixtures for each team
     for fixture in data["response"]:
 
-        #only get completed games that are in the regular season
-        if fixture["fixture"]["status"]["short"] == "FT" and fixture["league"]["round"].startswith("Regular"):
+        #only get games that are in the regular season
+        if fixture["league"]["round"].startswith("Regular"):
 
             homeTeam = fixture["teams"]["home"]["name"]
             awayTeam = fixture["teams"]["away"]["name"]
@@ -228,53 +230,83 @@ def populateLeagueSeason(countryCode, countryDisplay, leagueID, leagueDisplay, s
             homeTeam = homeTeam.rstrip(' W')
             awayTeam = awayTeam.rstrip(' W')
 
-            homeScore = int(fixture["goals"]["home"] or 0)   
-            awayScore = int(fixture["goals"]["away"] or 0)
-
             timestamp = int(fixture["fixture"]["timestamp"] * 1000 or -1) #convert to timestamp miliseconds
 
-            if timestamp < earliestTimestamp:
-                earliestTimestamp = timestamp
+            #if the game is completed
+            if fixture["fixture"]["status"]["short"] == "FT":
 
-            #Calculate points earned
-            if homeScore > awayScore:
-                homePoints = 3
-                awayPoints = 0
-            elif awayScore > homeScore:
-                awayPoints = 3
-                homePoints = 0
+                homeScore = int(fixture["goals"]["home"] or 0)   
+                awayScore = int(fixture["goals"]["away"] or 0)
+
+                if timestamp < earliestTimestamp:
+                    earliestTimestamp = timestamp
+
+                #Calculate points earned
+                if homeScore > awayScore:
+                    homePoints = 3
+                    awayPoints = 0
+                elif awayScore > homeScore:
+                    awayPoints = 3
+                    homePoints = 0
+                else:
+                    homePoints = 1
+                    awayPoints = 1
+
+                # create two fixtures, one for home and one for away
+                homeFixture = {'timestamp': timestamp,
+                            'teamScore': homeScore,
+                            'oppScore': awayScore,
+                            'pointsEarned': homePoints,
+                            'homeTeam': homeTeam,
+                            'homeScore': homeScore,
+                            'awayTeam': awayTeam,
+                            'awayScore': awayScore,
+                            'teamId': fixture["teams"]["home"]["id"],
+                            'teamName': fixture["teams"]["home"]["name"],
+                            }
+                
+                awayFixture = {'timestamp': timestamp,
+                            'teamScore': awayScore,
+                            'oppScore': homeScore,
+                            'pointsEarned': awayPoints,
+                            'homeTeam': homeTeam,
+                            'homeScore': homeScore,
+                            'awayTeam': awayTeam,
+                            'awayScore': awayScore,
+                            'teamId': fixture["teams"]["away"]["id"],
+                            'teamName': fixture["teams"]["away"]["name"]
+                            }
+                
+                # add to the array for each team
+                completeFixtures[homeTeam].append(homeFixture)
+                completeFixtures[awayTeam].append(awayFixture)
+            
+            # else the game isn't completed
             else:
-                homePoints = 1
-                awayPoints = 1
+                date = datetime.fromtimestamp(timestamp / 1000)
+                formatted_date = date.strftime('%d %B %Y')
 
-            # create two fixtures, one for home and one for away
-            homeFixture = {'timestamp': timestamp,
-                        'teamScore': homeScore,
-                        'oppScore': awayScore,
-                        'pointsEarned': homePoints,
-                        'homeTeam': homeTeam,
-                        'homeScore': homeScore,
-                        'awayTeam': awayTeam,
-                        'awayScore': awayScore,
-                        'teamId': fixture["teams"]["home"]["id"],
-                        'teamName': fixture["teams"]["home"]["name"],
-                        }
-            
-            awayFixture = {'timestamp': timestamp,
-                        'teamScore': awayScore,
-                        'oppScore': homeScore,
-                        'pointsEarned': awayPoints,
-                        'homeTeam': homeTeam,
-                        'homeScore': homeScore,
-                        'awayTeam': awayTeam,
-                        'awayScore': awayScore,
-                        'teamId': fixture["teams"]["away"]["id"],
-                        'teamName': fixture["teams"]["away"]["name"]
-                        }
-            
-            # add to the array for each team
-            teamFixtures[homeTeam].append(homeFixture)
-            teamFixtures[awayTeam].append(awayFixture)
+                # create two fixtures, one for home and one for away
+                homeFixture = {'timestamp': timestamp,
+                            'date': formatted_date,
+                            'homeTeam': homeTeam,
+                            'awayTeam': awayTeam,
+                            'teamId': fixture["teams"]["home"]["id"],
+                            'teamName': fixture["teams"]["home"]["name"],
+                            }
+                
+                awayFixture = {'timestamp': timestamp,
+                            'date': formatted_date,
+                            'homeTeam': homeTeam,
+                            'awayTeam': awayTeam,
+                            'teamId': fixture["teams"]["away"]["id"],
+                            'teamName': fixture["teams"]["away"]["name"]
+                            }
+
+                # add to the array for each team
+                upcomingFixtures[homeTeam].append(homeFixture)
+                upcomingFixtures[awayTeam].append(awayFixture)        
+
 
 
     earliestTimestamp = earliestTimestamp - 86400000 * 3 #set the origin point to 3 days earlier than the earliest fixture
@@ -282,18 +314,18 @@ def populateLeagueSeason(countryCode, countryDisplay, leagueID, leagueDisplay, s
     maxCumPoints = 0
 
     #Loop through each team.  Calculate cumulative points, goals, and goal differential for each fixture
-    for teamName in teamFixtures.keys(): 
+    for teamName in completeFixtures.keys(): 
         previousCumPoints = 0
         previousCumGoals = 0
         previousCumDifferential = 0
         matchNumber = 1
 
         #sort the fixtures by time
-        list.sort(teamFixtures[teamName], key=lambda d: d['timestamp'])
+        list.sort(completeFixtures[teamName], key=lambda d: d['timestamp'])
 
         #for each fixture, compute the cumulative points
         # for fixture in teamFixtures[teamName]:
-        for fixture in teamFixtures[teamName]:
+        for fixture in completeFixtures[teamName]:
             cumPoints = previousCumPoints + fixture["pointsEarned"]
 
             # Everton was docked 10 points by the PL on 11/16/2023 for violating FFL rules.  Adjust their cumulative points accordingly for their game on 11/26/23
@@ -323,7 +355,7 @@ def populateLeagueSeason(countryCode, countryDisplay, leagueID, leagueDisplay, s
             previousCumDifferential = fixture["cumDifferential"]
 
 
-    numberOfTeams = len(teamFixtures)
+    numberOfTeams = len(completeFixtures)
     lastFullMatchNumber = maxMatchNumber;
 
     #Determine the ranking for each team for each match number
@@ -337,19 +369,19 @@ def populateLeagueSeason(countryCode, countryDisplay, leagueID, leagueDisplay, s
         skipRanks = []
 
         #Loop through each team key and build an array of matches for this match number
-        for teamName in sorted(teamFixtures.keys()):
+        for teamName in sorted(completeFixtures.keys()):
 
             #If this team doesn't have this match number, it means not all matches have been played for this match number yet, so break
-            if (matchNumber >= len(teamFixtures[teamName])):
+            if (matchNumber >= len(completeFixtures[teamName])):
 
                 #append this team's latest rank to the list of ranks to skip, below
-                skipRanks.append(teamFixtures[teamName][-1]["rank"])
+                skipRanks.append(completeFixtures[teamName][-1]["rank"])
 
                 if (matchNumber < lastFullMatchNumber):
                     lastFullMatchNumber = matchNumber
                 continue
 
-            teamFixture = teamFixtures[teamName][matchNumber]
+            teamFixture = completeFixtures[teamName][matchNumber]
             matches.append(teamFixture)
             
 
@@ -366,20 +398,19 @@ def populateLeagueSeason(countryCode, countryDisplay, leagueID, leagueDisplay, s
             teamFixture["reverseRank"] = -1 * numberOfTeams + rank #the worst team has reverseRank of -1, second worse -2, etc. Used to find the "bottom five teams", etc.
             
     
-
     #format in the chartJS json
     chartJSdata = collections.defaultdict(list)
 
-    for teamNumber, teamName in enumerate(sorted(teamFixtures.keys())):
+    for teamNumber, teamName in enumerate(sorted(completeFixtures.keys())):
 
         dataPoints = []
         dataPoints.append({"timestamp": earliestTimestamp, "matchNumber": 0, "cumPoints": 0}) #add an origin-point for all teams
 
-        for fixture in sorted(teamFixtures[teamName], key=lambda d: d['timestamp']):
+        for fixture in sorted(completeFixtures[teamName], key=lambda d: d['timestamp']):
 
             # convert epoch timestamp to date, which will help the LLM generate a better summary
             date = datetime.fromtimestamp(fixture["timestamp"] / 1000)
-            formatted_date = date.strftime('%d %B, %Y')
+            formatted_date = date.strftime('%d %B %Y')
 
             dataPoints.append({"timestamp": fixture["timestamp"], 
                             "date": formatted_date,
@@ -418,7 +449,8 @@ def populateLeagueSeason(countryCode, countryDisplay, leagueID, leagueDisplay, s
             "tags": tags,
             "tension": 0.3,
             "stepped": True,
-            "data": dataPoints
+            "data": dataPoints,
+            "upcomingFixtures": upcomingFixtures[teamName]
         })
 
 
