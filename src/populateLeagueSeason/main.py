@@ -462,7 +462,7 @@ def populateLeagueSeason(countryCode, countryDisplay, leagueID, leagueDisplay, s
     db.collection("countries/" + countryCode + "/leagues/" + str(leagueID) + "/seasons").document(str(season)).set(chartJSdata)
 
     # if it's the premier league
-    if leagueID == 39 and not args.skipgenai:
+    if not args.skipgenai:
 
         #loop through each team in chartJSdata and generate an AI summary
         for team in chartJSdata["datasets"]:
