@@ -307,6 +307,9 @@ def populateLeagueSeason(countryCode, countryDisplay, leagueID, leagueDisplay, s
                 upcomingFixtures[homeTeam].append(homeFixture)
                 upcomingFixtures[awayTeam].append(awayFixture)        
 
+    # sort the upcoming fixtures by timestamp
+    for teamName in upcomingFixtures.keys():
+        list.sort(upcomingFixtures[teamName], key=lambda d: d['timestamp'])
 
 
     earliestTimestamp = earliestTimestamp - 86400000 * 3 #set the origin point to 3 days earlier than the earliest fixture
@@ -482,8 +485,6 @@ def generateAISummary(countryCode, leagueID, season, teamName, data):
     # Make a REST call to the URL
     generateConn.request("GET", url)
     res = generateConn.getresponse()
-    rawData = res.read()
-    data = json.loads(rawData.decode("utf-8"));
 
     # We don't actually care about the data; we just wanted the function to cache it.  So we're done here.
 
