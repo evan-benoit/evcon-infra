@@ -361,6 +361,8 @@ def populateLeagueSeason(countryCode, countryDisplay, leagueID, leagueDisplay, s
     numberOfTeams = len(completeFixtures)
     lastFullMatchNumber = maxMatchNumber;
 
+    skipRanks = []
+
     #Determine the ranking for each team for each match number
     #For each match number 
     for matchNumber in range(maxMatchNumber):
@@ -369,7 +371,6 @@ def populateLeagueSeason(countryCode, countryDisplay, leagueID, leagueDisplay, s
         matches = []
 
         # maintain a list of ranks that should be skipped (e.g. if a team hasn't played a match yet, skip its rank)
-        skipRanks = []
 
         #Loop through each team key and build an array of matches for this match number
         for teamName in sorted(completeFixtures.keys()):
@@ -391,14 +392,16 @@ def populateLeagueSeason(countryCode, countryDisplay, leagueID, leagueDisplay, s
         #Sort that array using the cumulative points and tiebreakers
         rank = 1
         for teamFixture in sorted(matches, key=lambda d: (d['cumPoints'], d['cumDifferential'], d['cumGoals']), reverse=True):
-            teamFixture["rank"] = rank
-            rank += 1
             
-            # if this rank is in the list of ranks to skip, skip it
-            if rank in skipRanks:
+            # while this rank is in the list of ranks to skip, skip it
+            while rank in skipRanks:
                 rank += 1
 
+            teamFixture["rank"] = rank
             teamFixture["reverseRank"] = -1 * numberOfTeams + rank #the worst team has reverseRank of -1, second worse -2, etc. Used to find the "bottom five teams", etc.
+
+            rank += 1
+
             
     
     #format in the chartJS json
