@@ -123,7 +123,7 @@ countryLeagues = [
     ]
 
 
-def populateTodaysLeagues(request, backdate = 0):
+def populateTodaysLeagues(request, backdate = 0, genai = True):
     
 
     thisYear = datetime.today().year
@@ -158,7 +158,7 @@ def populateTodaysLeagues(request, backdate = 0):
 
                 #If a game was played for this league on this day, reprocess the entire season
                 if len(dateFixtures["response"]) > 0:
-                    populateLeagueSeason(country["code"], country["display"], league["id"], league["display"], season )
+                    populateLeagueSeason(country["code"], country["display"], league["id"], league["display"], season, genai )
 
                    
     print ("success, building index")
@@ -171,7 +171,7 @@ def populateTodaysLeagues(request, backdate = 0):
 
 
 
-def populateLeagueSeason(countryCode, countryDisplay, leagueID, leagueDisplay, season):
+def populateLeagueSeason(countryCode, countryDisplay, leagueID, leagueDisplay, season, genai = True):
 
     print ("populating " + countryDisplay + ":" + leagueDisplay + ":" + str(season))
 
@@ -467,8 +467,7 @@ def populateLeagueSeason(countryCode, countryDisplay, leagueID, leagueDisplay, s
     #save to firebase
     db.collection("countries/" + countryCode + "/leagues/" + str(leagueID) + "/seasons").document(str(season)).set(chartJSdata)
 
-    # if it's the premier league
-    if not args.skipgenai:
+    if genai:
 
         #loop through each team in chartJSdata and generate an AI summary
         for team in chartJSdata["datasets"]:
@@ -542,10 +541,10 @@ if __name__ == "__main__":
     if args.backpopulate:
         backPopulate()
     elif args.premier:
-        populateLeagueSeason("uk", "🇬🇧UK", 39, "Premier League", 2023)
+        populateLeagueSeason("uk", "🇬🇧UK", 39, "Premier League", 2023, not args.skipgenai)
     elif args.buildindex:
         buildIndex()
     elif args.populateTodaysLeagues:
-        populateTodaysLeagues(None, args.backdate)
+        populateTodaysLeagues(None, args.backdate, not args.skipgenai)
     else:
         print ("No command specified.  Use --backpopulate, --buildindex, pr --populate")
