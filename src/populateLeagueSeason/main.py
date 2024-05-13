@@ -169,9 +169,28 @@ def populateTodaysLeagues(request, backdate = 0, genai = True):
 
     return 'OK'
 
+def getActualPoints(leagueID, season):
+    
+        actualPoints = collections.defaultdict(list)
+
+        conn.request("GET", "/v3/standings?league=" + str(leagueID) + "&season=" + str(season), headers=headers)
+    
+        res = conn.getresponse()
+        rawData = res.read()
+        data = json.loads(rawData.decode("utf-8"));
+    
+        for standing in data["response"][0]["league"]["standings"][0]:
+            actualPoints[standing["team"]["name"]] = standing["points"]
+
+
+        return actualPoints
+
 
 
 def populateLeagueSeason(countryCode, countryDisplay, leagueID, leagueDisplay, season, genai = True):
+
+
+    actualPoints = getActualPoints(leagueID, season)
 
     print ("populating " + countryDisplay + ":" + leagueDisplay + ":" + str(season))
 
@@ -357,6 +376,10 @@ def populateLeagueSeason(countryCode, countryDisplay, leagueID, leagueDisplay, s
             fixture["cumDifferential"] = previousCumDifferential + fixture["teamScore"] - fixture["oppScore"]
             previousCumDifferential = fixture["cumDifferential"]
 
+        #compare the calculated points to the actual points from the API
+        if teamName in actualPoints:
+            if actualPoints[teamName] != previousCumPoints:
+                print ("Warning: " + teamName + " has " + str(previousCumPoints) + " points, but the API says they have " + str(actualPoints[teamName]) + " points")
 
     numberOfTeams = len(completeFixtures)
     lastFullMatchNumber = maxMatchNumber;
