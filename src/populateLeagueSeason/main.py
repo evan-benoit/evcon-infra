@@ -352,7 +352,7 @@ def populateLeagueSeason(countryCode, countryDisplay, leagueID, leagueDisplay, s
 
             # Everton was docked 10 points by the PL on 11/16/2023 for violating FFL rules.  Adjust their cumulative points accordingly for their game on 11/26/23
             # this is a one-off; if the PL does this regularly we'll need to find a better way to do this
-            if teamName == "Everton" and fixture["timestamp"] > 1700945958000 and fixture["timestamp"] < 1701118758000:
+            if teamName == "Everton" and fixture["timestamp"] > 1701118758000 and previousTimestamp < 1701118758000:
                 print ("Everton docked 10 points")
                 cumPoints -= 10
 
@@ -375,6 +375,8 @@ def populateLeagueSeason(countryCode, countryDisplay, leagueID, leagueDisplay, s
 
             fixture["cumDifferential"] = previousCumDifferential + fixture["teamScore"] - fixture["oppScore"]
             previousCumDifferential = fixture["cumDifferential"]
+
+            previousTimestamp = fixture["timestamp"]
 
         #compare the calculated points to the actual points from the API
         if teamName in actualPoints:
