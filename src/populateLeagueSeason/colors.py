@@ -281,3 +281,20 @@ teamTags = {
     'West Ham' : ['London'],
     'Wolves' : [],
 }
+
+
+teamDockedPoints = {
+    'Everton' : [
+        {
+            'date' : 1701118758000,
+            'points' : 8
+        }
+    ],
+    'Nottingham Forest' : [
+         {
+            'date' : 1710793309000,
+            'points' : 4
+        }
+    ],       
+
+    }         

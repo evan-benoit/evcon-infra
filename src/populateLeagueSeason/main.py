@@ -6,7 +6,7 @@ import time
 from google.cloud import firestore
 from google.cloud import secretmanager
 from datetime import datetime
-from colors import (teamBorderColor, teamBackgroundColor, defaultColors, teamTags)
+from colors import (teamBorderColor, teamBackgroundColor, defaultColors, teamTags, teamDockedPoints)
 from buildIndex import (buildIndex)
 from datetime import date
 from datetime import time
@@ -350,11 +350,14 @@ def populateLeagueSeason(countryCode, countryDisplay, leagueID, leagueDisplay, s
         for fixture in completeFixtures[teamName]:
             cumPoints = previousCumPoints + fixture["pointsEarned"]
 
-            # Everton was docked 10 points by the PL on 11/16/2023 for violating FFL rules.  Adjust their cumulative points accordingly for their game on 11/26/23
-            # this is a one-off; if the PL does this regularly we'll need to find a better way to do this
-            if teamName == "Everton" and fixture["timestamp"] > 1701118758000 and previousTimestamp < 1701118758000:
-                print ("Everton docked 10 points")
-                cumPoints -= 10
+            # Loop through the array of docked points for this team (if any), compare the timestamp, and dock the points
+            if teamName in teamDockedPoints:
+                for dockedPoints in teamDockedPoints[teamName]:
+                    if fixture["timestamp"] > dockedPoints["date"] and previousTimestamp < dockedPoints["date"]:
+                        print (teamName + " docked " + str(dockedPoints["points"]) + " points")
+                        cumPoints -= dockedPoints["points"]
+
+
 
             fixture["cumPoints"] = cumPoints
             previousCumPoints = cumPoints
