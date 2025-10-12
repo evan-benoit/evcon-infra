@@ -20,7 +20,10 @@
             "program": "src/populateLeagueSeason/main.py",
             "console": "integratedTerminal",
             "justMyCode": true,
-            "args": ["--populateTodaysLeagues"]
+            "args": ["--populateTodaysLeagues"],
+            "python": "${workspaceFolder}/src/populateLeagueSeason/.venv/bin/python",
+            "cwd": "${workspaceFolder}"
+
         },
         {
             "name": "Python: Populate the past 7 days' leagues",
@@ -29,7 +32,9 @@
             "program": "src/populateLeagueSeason/main.py",
             "console": "integratedTerminal",
             "justMyCode": true,
-            "args": ["--populateTodaysLeagues", "--backdate", "7"]
+            "args": ["--populateTodaysLeagues", "--backdate", "7"],
+            "python": "${workspaceFolder}/src/populateLeagueSeason/.venv/bin/python",
+            "cwd": "${workspaceFolder}"
         },
         {
             "name": "Python: Populate the premier league (no AI)",
@@ -38,7 +43,10 @@
             "program": "src/populateLeagueSeason/main.py",
             "console": "integratedTerminal",
             "justMyCode": true,
-            "args": ["--premier", "--skipgenai"]
+            "args": ["--premier", "--skipgenai"],
+            "python": "${workspaceFolder}/src/populateLeagueSeason/.venv/bin/python",
+            "cwd": "${workspaceFolder}"
+
         },
         {
             "name": "Python: GetBetterHalf",
@@ -47,7 +55,9 @@
             "program": "src/betterHalf/main.py",
             "console": "integratedTerminal",
             "justMyCode": true,
-            "args": ["uk", "39", "2023-09-24", "2023-09-24", "Europe/London", "--cacheBuster"]
+            "args": ["uk", "39", "2023-09-24", "2023-09-24", "Europe/London", "--cacheBuster"],
+            "python": "${workspaceFolder}/src/betterHalf/.venv/bin/python",
+            "cwd": "${workspaceFolder}"
         },
         {
             "name": "Scratch",

@@ -18,12 +18,28 @@ secretClient = secretmanager.SecretManagerServiceClient()
 secretName = f"projects/evcon-app/secrets/football-api-key/versions/latest"
 response = secretClient.access_secret_version(name=secretName)
 footballAPIKey = response.payload.data.decode('UTF-8')
-conn = http.client.HTTPSConnection("api-football-v1.p.rapidapi.com")
+
+# Hardcode for now
+footballAPIKey = "5ee7c3f27343e604a61a6a667d94bf5a"
+
+conn = http.client.HTTPSConnection("v3.football.api-sports.io")
 
 headers = {
     'X-RapidAPI-Key': footballAPIKey,
-    'X-RapidAPI-Host': "api-football-v1.p.rapidapi.com"
+    'X-RapidAPI-Host': "v3.football.api-sports.io"
     }
+
+# Check Connectivity to the API
+conn.request("GET", "/status", headers=headers)
+res = conn.getresponse()
+rawData = res.read()
+status = json.loads(rawData.decode("utf-8"));
+if status["paging"]["current"] == 0:
+    print ("Error: Football API returned 0 results.  Check your API key and your plan.")
+    exit(1)
+else:
+    print ("Football API connectivity OK.")
+
 
 todaysDate = datetime.today().strftime('%Y-%m-%d')
 # todaysDate = '2023-09-24'
@@ -569,7 +585,7 @@ if __name__ == "__main__":
     if args.backpopulate:
         backPopulate()
     elif args.premier:
-        populateLeagueSeason("uk", "🇬🇧UK", 39, "Premier League", 2023, not args.skipgenai)
+        populateLeagueSeason("uk", "🇬🇧UK", 39, "Premier League", 2025, not args.skipgenai)
     elif args.buildindex:
         buildIndex()
     elif args.populateTodaysLeagues:
