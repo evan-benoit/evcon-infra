@@ -1,26 +1,18 @@
-
-terraform {
-  required_providers {
-    kubernetes = {
-      source  = "hashicorp/kubernetes"
-      version = ">= 2.0.0"
-    }
-  }
-  backend "gcs" {
-    bucket  = "85025690a453809d-bucket-tfstate"
-    prefix  = "terraform/gke-state"
-  }
-
-}
 provider "kubernetes" {
-  config_path = "~/.kube/config"
-  config_context = "gke_evcon-app_us-east1_evcon-app-gke"
+  config_path    = "~/.kube/config"
+  config_context = var.kube_context
 }
+
+variable "kube_context" {}
+variable "project_id" {}
+variable "git_sha" { default = "latest" }
+variable "load_balancer_ip" { default = null }
 
 resource "kubernetes_deployment" "webserver" {
   metadata {
-    name      = "webserver"
+    name = "webserver-${terraform.workspace}"   # distinguish dev/prod
   }
+
   spec {
     replicas = 2
     selector {
@@ -36,12 +28,12 @@ resource "kubernetes_deployment" "webserver" {
       }
       spec {
         container {
-          image = "us-east1-docker.pkg.dev/evcon-app/my-repository/webserver:latest"
           name  = "webserver-container"
+          image = "us-east1-docker.pkg.dev/${var.project_id}/my-repository/webserver:${var.git_sha}"
           port {
             container_port = 80
           }
-         resources {
+          resources {
             limits = {
               cpu    = "250m"
               memory = "512Mi"
@@ -59,21 +51,19 @@ resource "kubernetes_deployment" "webserver" {
 
 resource "kubernetes_service" "webserver" {
   metadata {
-    name = "webserver"
+    name = "webserver-${terraform.workspace}"
   }
 
   spec {
     selector = {
       app = "webserver"
     }
-
     port {
       port        = 80
       target_port = 80
     }
 
     type = "LoadBalancer"
-    load_balancer_ip = "35.231.6.232"
-
+    load_balancer_ip = var.load_balancer_ip
   }
 }
