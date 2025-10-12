@@ -28,3 +28,4 @@ src/populateLeagueSeason/__pycache__/
 tf/.terraform
 tf/gke/.terraform
 .DS_Store
+src/scratch/.venv/

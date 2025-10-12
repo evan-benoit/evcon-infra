@@ -56,7 +56,9 @@
             "program": "src/scratch/main.py",
             "console": "integratedTerminal",
             "justMyCode": true,
-            "args": []
+            "args": [],
+            "python": "${workspaceFolder}/src/scratch/.venv/bin/python",
+            "cwd": "${workspaceFolder}"
         }
     ]
 }
