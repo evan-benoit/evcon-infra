@@ -19,9 +19,6 @@ secretName = f"projects/evcon-app/secrets/football-api-key/versions/latest"
 response = secretClient.access_secret_version(name=secretName)
 footballAPIKey = response.payload.data.decode('UTF-8')
 
-# Hardcode for now
-footballAPIKey = "5ee7c3f27343e604a61a6a667d94bf5a"
-
 conn = http.client.HTTPSConnection("v3.football.api-sports.io")
 
 headers = {
