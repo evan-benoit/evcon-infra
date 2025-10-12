@@ -22,3 +22,7 @@ output "tfstate_name" {
   value       = google_storage_bucket.tfstate.name
   description = "Name of the TF state bucket"
 }
+
+output "webserver_ip" {
+  value = google_compute_address.webserver_ip.address
+}

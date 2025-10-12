@@ -12,9 +12,7 @@ resource "google_dns_record_set" "default" {
   managed_zone = google_dns_managed_zone.default.name
   type         = "A"
   ttl          = 300
-  rrdatas = [
-    "34.120.168.62"
-  ]
+  rrdatas      = [google_compute_address.webserver_ip.address]
 }
 
 resource "google_dns_record_set" "cname" {

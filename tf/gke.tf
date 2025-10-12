@@ -13,23 +13,6 @@ variable "gke_num_nodes" {
   description = "number of gke nodes"
 }
 
-# GKE cluster
-resource "google_container_cluster" "primary" {
-  name     = "${var.project_id}-gke"
-  location = var.region
-
-  enable_autopilot = true
-
-  # workaround, see https://github.com/hashicorp/terraform-provider-google/issues/10782
-  ip_allocation_policy {
-    cluster_ipv4_cidr_block  = ""
-    services_ipv4_cidr_block = ""
-  }
-
-  network    = google_compute_network.vpc.name
-  subnetwork = google_compute_subnetwork.subnet.name
-}
-
 
 # # Kubernetes provider
 # # The Terraform Kubernetes Provider configuration below is used as a learning reference only. 

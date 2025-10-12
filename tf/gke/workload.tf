@@ -57,4 +57,23 @@ resource "kubernetes_deployment" "webserver" {
   }
 }
 
+resource "kubernetes_service" "webserver" {
+  metadata {
+    name = "webserver"
+  }
 
+  spec {
+    selector = {
+      app = "webserver"
+    }
+
+    port {
+      port        = 80
+      target_port = 80
+    }
+
+    type = "LoadBalancer"
+    load_balancer_ip = "35.231.6.232"
+
+  }
+}

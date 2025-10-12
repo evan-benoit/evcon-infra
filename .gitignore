@@ -25,3 +25,8 @@ tf/pagerduty/.terraform.lock.hcl
 tf/tmp/betterHalf.zip
 tf/tmp/getIndex.zip
 tf/tmp/getSeason.zip
+src/populateLeagueSeason/.venv/
+src/populateLeagueSeason/__pycache__/
+tf/.terraform
+tf/gke/.terraform
+.DS_Store
