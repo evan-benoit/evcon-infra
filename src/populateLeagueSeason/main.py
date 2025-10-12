@@ -573,7 +573,7 @@ if __name__ == "__main__":
     parser.add_argument('--populateTodaysLeagues', action='store_true', help='Populate todays leagues')
     parser.add_argument('--backdate', type=int, default=0, help='Backdate the populateTodaysLeagues command by this many days')
     parser.add_argument('--premier', action='store_true', help='Generate just the premier league (useful for debugging purposes)')
-    parser.add_argument('--skipgenai', action='store_true', default=False, help='Don''t generate AI summaries')
+    parser.add_argument('--skipgenai', action='store_true', default=True, help='Don''t generate AI summaries')
 
 
 
@@ -582,7 +582,7 @@ if __name__ == "__main__":
     if args.backpopulate:
         backPopulate()
     elif args.premier:
-        populateLeagueSeason("uk", "🇬🇧UK", 39, "Premier League", 2023, not args.skipgenai)
+        populateLeagueSeason("uk", "🇬🇧UK", 39, "Premier League", 2024, not args.skipgenai)
     elif args.buildindex:
         buildIndex()
     elif args.populateTodaysLeagues:

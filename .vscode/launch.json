@@ -46,6 +46,17 @@
             "args": ["--premier", "--skipgenai"],
             "python": "${workspaceFolder}/src/populateLeagueSeason/.venv/bin/python",
             "cwd": "${workspaceFolder}"
+        },
+       {
+            "name": "Python: Rebuild Index for Dropdowns",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "src/populateLeagueSeason/main.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "args": ["--buildindex"],
+            "python": "${workspaceFolder}/src/populateLeagueSeason/.venv/bin/python",
+            "cwd": "${workspaceFolder}"
 
         },
         {
