@@ -165,7 +165,7 @@ def populateTodaysLeagues(request, backdate = 0, genai = True):
 
             for season in seasons:
 
-                conn.request("GET", "/v3/fixtures?league=" + str(league['id']) + "&season=" + str(season) + "&from=" + startDate + "&to=" + todaysDate, headers=headers)
+                conn.request("GET", "/fixtures?league=" + str(league['id']) + "&season=" + str(season) + "&from=" + startDate + "&to=" + todaysDate, headers=headers)
                 res = conn.getresponse()
                 rawData = res.read()
                 dateFixtures = json.loads(rawData.decode("utf-8"));
@@ -189,7 +189,7 @@ def getActualPoints(leagueID, season):
     
         actualPoints = collections.defaultdict(list)
 
-        conn.request("GET", "/v3/standings?league=" + str(leagueID) + "&season=" + str(season), headers=headers)
+        conn.request("GET", "/standings?league=" + str(leagueID) + "&season=" + str(season), headers=headers)
     
         res = conn.getresponse()
         rawData = res.read()
@@ -218,7 +218,7 @@ def populateLeagueSeason(countryCode, countryDisplay, leagueID, leagueDisplay, s
 
 
     # Get the league info from the API
-    conn.request("GET", "/v3/leagues?id=" + str(leagueID), headers=headers)
+    conn.request("GET", "/leagues?id=" + str(leagueID), headers=headers)
 
     res = conn.getresponse()
     rawData = res.read()
@@ -235,7 +235,7 @@ def populateLeagueSeason(countryCode, countryDisplay, leagueID, leagueDisplay, s
     db.collection(u'countries/' + countryCode + "/leagues").document(str(leagueID)).set(leagueJSdata)
 
 
-    conn.request("GET", "/v3/fixtures?league=" + str(leagueID) + "&season=" + str(season), headers=headers)
+    conn.request("GET", "/fixtures?league=" + str(leagueID) + "&season=" + str(season), headers=headers)
 
     res = conn.getresponse()
     rawData = res.read()
@@ -545,7 +545,7 @@ def backPopulate():
         for league in country["leagues"]:
             leagueID = league["id"]
 
-            conn.request("GET", "/v3/leagues?id=" + str(leagueID), headers=headers)
+            conn.request("GET", "/leagues?id=" + str(leagueID), headers=headers)
 
             res = conn.getresponse()
             rawData = res.read()
@@ -585,7 +585,7 @@ if __name__ == "__main__":
     if args.backpopulate:
         backPopulate()
     elif args.premier:
-        populateLeagueSeason("uk", "🇬🇧UK", 39, "Premier League", 2025, not args.skipgenai)
+        populateLeagueSeason("uk", "🇬🇧UK", 39, "Premier League", 2023, not args.skipgenai)
     elif args.buildindex:
         buildIndex()
     elif args.populateTodaysLeagues:
