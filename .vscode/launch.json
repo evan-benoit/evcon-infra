@@ -26,6 +26,18 @@
 
         },
         {
+            "name": "Python: Backpopulate Everything",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "src/populateLeagueSeason/main.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "args": ["--backpopulate"],
+            "python": "${workspaceFolder}/src/populateLeagueSeason/.venv/bin/python",
+            "cwd": "${workspaceFolder}"
+
+        },
+        {
             "name": "Python: Populate the past 7 days' leagues",
             "type": "debugpy",
             "request": "launch",
