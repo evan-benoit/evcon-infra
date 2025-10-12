@@ -16,7 +16,7 @@ resource "google_secret_manager_secret" "football-api-key" {
   
   secret_id = "football-api-key"
   replication {
-    automatic = true
+    auto {}
   }
 }
 
