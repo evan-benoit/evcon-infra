@@ -34,6 +34,8 @@ resource "google_cloudfunctions_function" "populateTodaysLeagues" {
 
     # Must match the function name in the cloud function `main.py` source code
     entry_point           = "populateTodaysLeagues"
+
+    service_account_email = google_service_account.cloudfunction_service_account.email
 }
 
 # Create a cloudFunction for betterHalf.py
@@ -62,6 +64,8 @@ resource "google_cloudfunctions_function" "betterHalf" {
     min_instances         = 1
     max_instances         = 10
     entry_point           = "getGamesForRequest"
+
+    service_account_email = google_service_account.cloudfunction_service_account.email
 }
 
 # make betterHalf publicly available
@@ -102,6 +106,8 @@ resource "google_cloudfunctions_function" "getIndex" {
     min_instances         = 1
     max_instances         = 10
     entry_point           = "getIndex"
+
+    service_account_email = google_service_account.cloudfunction_service_account.email
 }
 
 # make getIndex publicly available
@@ -141,6 +147,8 @@ resource "google_cloudfunctions_function" "getSeason" {
     min_instances         = 1
     max_instances         = 10
     entry_point           = "getSeason"
+
+    service_account_email = google_service_account.cloudfunction_service_account.email
 }
 
 # make getSeason publicly available

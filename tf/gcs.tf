@@ -1,6 +1,6 @@
 
 resource "google_storage_bucket" "evcon-summaries" {
-    name     = "evcon-summaries"
+    name     = "${var.project_id}-summaries"
     location = "us-east1"
     storage_class = "STANDARD"
     force_destroy = true

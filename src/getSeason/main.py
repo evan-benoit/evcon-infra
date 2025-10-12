@@ -8,10 +8,11 @@ import datetime
 from datetime import date
 from datetime import timedelta
 import functions_framework
+import os
 
+project_id = os.environ.get("GCP_PROJECT", "evcon-app-dev")  # fallback if not set
 
-
-db = firestore.Client(project='evcon-app')
+db = firestore.Client(project=project_id)
 
 
 @functions_framework.http

@@ -77,7 +77,56 @@ resource "google_project_service" "service-oslogin" {
   disable_dependent_services = true
 }
 
+resource "google_project_service" "service-compute" {
+  project = var.project_id
+  service = "compute.googleapis.com"
 
+  timeouts {
+    create = "30m"
+    update = "40m"
+  }
+
+  disable_dependent_services = true
+}
+
+
+resource "google_project_service" "service-cloudfunctions" {
+  project = var.project_id
+  service = "cloudfunctions.googleapis.com"
+
+  timeouts {
+    create = "30m"
+    update = "40m"
+  }
+
+  disable_dependent_services = true
+}
+
+
+resource "google_project_service" "service-cloudscheduler" {
+  project = var.project_id
+  service = "cloudscheduler.googleapis.com"
+
+  timeouts {
+    create = "30m"
+    update = "40m"
+  }
+
+  disable_dependent_services = true
+}
+
+
+resource "google_project_service" "service-cloudbuild" {
+  project = var.project_id
+  service = "cloudbuild.googleapis.com"
+
+  timeouts {
+    create = "30m"
+    update = "40m"
+  }
+
+  disable_dependent_services = true
+}
 
 resource "google_artifact_registry_repository" "my-repository" {
   location      = "us-east1"

@@ -2,8 +2,11 @@ import json
 import collections
 from google.cloud import firestore
 from datetime import datetime
+import os
 
-db = firestore.Client(project='evcon-app')
+project_id = os.environ.get("GCP_PROJECT", "evcon-app-dev")  # fallback if not set
+
+db = firestore.Client(project=project_id)
 
 index = {}
 

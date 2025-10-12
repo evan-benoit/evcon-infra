@@ -11,12 +11,19 @@ from buildIndex import (buildIndex)
 from datetime import date
 from datetime import time
 from datetime import datetime, timedelta
+import os
 
-db = firestore.Client(project='evcon-app')
+project_id = os.environ.get("GCP_PROJECT", "evcon-app-dev")  # fallback if not set
+
+db = firestore.Client(project=project_id)
+
+secretName = "football-api-key"
+
+client = secretmanager.SecretManagerServiceClient()
+secretPath = f"projects/{project_id}/secrets/{secretName}/versions/latest"
 
 secretClient = secretmanager.SecretManagerServiceClient()
-secretName = f"projects/evcon-app/secrets/football-api-key/versions/latest"
-response = secretClient.access_secret_version(name=secretName)
+response = secretClient.access_secret_version(name=secretPath)
 footballAPIKey = response.payload.data.decode('UTF-8')
 
 conn = http.client.HTTPSConnection("v3.football.api-sports.io")
