@@ -13,7 +13,7 @@ from datetime import time
 from datetime import datetime, timedelta
 import os
 
-project_id = os.environ.get("GCP_PROJECT", "evcon-app-dev")  # fallback if not set
+project_id = os.environ["PROJECT_ID"]
 
 db = firestore.Client(project=project_id)
 

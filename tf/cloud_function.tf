@@ -36,6 +36,10 @@ resource "google_cloudfunctions_function" "populateTodaysLeagues" {
     entry_point           = "populateTodaysLeagues"
 
     service_account_email = google_service_account.cloudfunction_service_account.email
+
+    environment_variables = {
+      PROJECT_ID = var.project_id
+    }
 }
 
 # Create a cloudFunction for betterHalf.py
@@ -66,6 +70,10 @@ resource "google_cloudfunctions_function" "betterHalf" {
     entry_point           = "getGamesForRequest"
 
     service_account_email = google_service_account.cloudfunction_service_account.email
+
+    environment_variables = {
+      PROJECT_ID = var.project_id
+    }
 }
 
 # make betterHalf publicly available
@@ -108,6 +116,10 @@ resource "google_cloudfunctions_function" "getIndex" {
     entry_point           = "getIndex"
 
     service_account_email = google_service_account.cloudfunction_service_account.email
+
+    environment_variables = {
+      PROJECT_ID = var.project_id
+    }
 }
 
 # make getIndex publicly available
@@ -149,6 +161,10 @@ resource "google_cloudfunctions_function" "getSeason" {
     entry_point           = "getSeason"
 
     service_account_email = google_service_account.cloudfunction_service_account.email
+
+    environment_variables = {
+      PROJECT_ID = var.project_id
+    }
 }
 
 # make getSeason publicly available

@@ -10,7 +10,7 @@ from datetime import timedelta
 import functions_framework
 import os
 
-project_id = os.environ.get("GCP_PROJECT", "evcon-app-dev")  # fallback if not set
+project_id = os.environ.get("GOOGLE_CLOUD_PROJECT", "evcon-app-dev")  # fallback if not set
 
 db = firestore.Client(project=project_id)
 
