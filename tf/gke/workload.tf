@@ -10,7 +10,7 @@ variable "load_balancer_ip" { default = null }
 
 resource "kubernetes_deployment" "webserver" {
   metadata {
-    name = "webserver-${terraform.workspace}"   # distinguish dev/prod
+    name = "webserver"   
   }
 
   spec {
@@ -51,7 +51,7 @@ resource "kubernetes_deployment" "webserver" {
 
 resource "kubernetes_service" "webserver" {
   metadata {
-    name = "webserver-${terraform.workspace}"
+    name = "webserver"
   }
 
   spec {
