@@ -10,7 +10,8 @@ from datetime import timedelta
 import functions_framework
 import os
 
-project_id = os.environ.get("GOOGLE_CLOUD_PROJECT", "evcon-app-dev")  # fallback if not set
+project_id = os.environ["PROJECT_ID"]
+
 
 db = firestore.Client(project=project_id)
 
@@ -24,7 +25,7 @@ def getSeason(request):
         # header and caches preflight response for an 3600s
         headers = {
             # allow requests from trophypace.com and localhost
-            "Access-Control-Allow-Origin": "https://trophypace.com, http://localhost:1234",
+            "Access-Control-Allow-Origin": "http://trophypace.com, https://trophypace.com, http://localhost:1234",
             "Access-Control-Allow-Methods": "GET",
             "Access-Control-Allow-Headers": "Content-Type",
             "Access-Control-Max-Age": "3600",

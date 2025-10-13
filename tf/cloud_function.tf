@@ -194,6 +194,18 @@ resource "google_cloudfunctions_function_iam_member" "invoker" {
   member = "serviceAccount:${google_service_account.cloudfunction_service_account.email}"
 }
 
+resource "google_project_iam_member" "cloudfunction_firestore_access" {
+  project = var.project_id
+  role    = "roles/datastore.user"
+  member  = "serviceAccount:${google_service_account.cloudfunction_service_account.email}"
+}
+
+# Give Cloud Function service account Secret Manager access
+resource "google_project_iam_member" "cloudfunction_secretmanager_access" {
+  project = var.project_id
+  role    = "roles/secretmanager.secretAccessor"
+  member  = "serviceAccount:${google_service_account.cloudfunction_service_account.email}"
+}
 
 resource "google_cloud_scheduler_job" "populateTodaysLeagues_job" {
   name             = "populateTodaysLeagues_job"
