@@ -209,8 +209,8 @@ resource "google_project_iam_member" "cloudfunction_secretmanager_access" {
 
 resource "google_cloud_scheduler_job" "populateTodaysLeagues_job" {
   name             = "populateTodaysLeagues_job"
-  description      = "Run populateTodaysLeagues hourly"
-  schedule         = "0 * * * *"
+  description      = "Run populateTodaysLeagues twice daily"
+  schedule         = "0 0,12 * * *"
   time_zone        = "GMT"
   attempt_deadline = "320s"
 
