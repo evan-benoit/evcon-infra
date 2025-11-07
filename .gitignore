@@ -30,3 +30,4 @@ tf/gke/.terraform
 .DS_Store
 src/scratch/.venv/
 tf/gke/terraform.tfstate.d/
+tf/.terraform.lock.hcl

@@ -1,72 +1,75 @@
-
-# --- Cloud Storage bucket for static site ---
+# Cloud Storage bucket
 resource "google_storage_bucket" "site" {
-  name                        = "${var.project_id}-trophypace-site"
-  location                    = "US"
-  uniform_bucket_level_access  = true
-  force_destroy                = true
-
+  name                        = "${var.project_id}-site"
+  location                    = "us-east1"
+  uniform_bucket_level_access = true
+  storage_class               = "STANDARD"
+  // delete bucket and contents on destroy.
+  force_destroy = true
+  // Assign specialty files
   website {
     main_page_suffix = "index.html"
     not_found_page   = "404.html"
   }
+}
 
-  iam_configuration {
-    public_access_prevention = "inherited"
+resource "null_resource" "upload_image" {
+  provisioner "local-exec" {
+    command = "gcloud storage cp gs://gcp-external-http-lb-with-bucket/three-cats.jpg gs://${google_storage_bucket.site.name}/never-fetch/ --recursive"
   }
 }
 
-
-# --- Backend bucket for Cloud CDN ---
-resource "google_compute_backend_bucket" "cdn_backend" {
-  name        = "trophypace-backend"
-  bucket_name = google_storage_bucket.site.name
-  enable_cdn  = true
-}
-
-# --- URL Map for routing ---
-resource "google_compute_url_map" "cdn_map" {
-  name            = "${var.project_id}-trophypace-map"
-  default_service = google_compute_backend_bucket.cdn_backend.id
-}
-
-# --- Target HTTP proxy (no SSL) ---
-resource "google_compute_target_http_proxy" "cdn_proxy" {
-  name    = "trophypace-proxy-http"
-  url_map = google_compute_url_map.cdn_map.id
-}
-
-# --- Global static IP for the load balancer ---
-resource "google_compute_global_address" "cdn_ip" {
-  name = "trophypace-ip"
-}
-
-# --- Global forwarding rule (port 80 / HTTP) ---
-resource "google_compute_global_forwarding_rule" "cdn_rule" {
-  name        = "trophypace-http-rule"
-  target      = google_compute_target_http_proxy.cdn_proxy.id
-  port_range  = "80"
-  ip_protocol = "TCP"
-  ip_address  = google_compute_global_address.cdn_ip.address
-}
-
-# --- Project lookup (for service account binding) ---
-data "google_project" "current" {}
-
-# --- IAM binding for LB access ---
-resource "google_storage_bucket_iam_member" "lb_access" {
+# make bucket public
+resource "google_storage_bucket_iam_member" "default" {
   bucket = google_storage_bucket.site.name
   role   = "roles/storage.objectViewer"
-  member = "serviceAccount:service-${data.google_project.current.number}@compute-system.iam.gserviceaccount.com"
-
-  # ensure this happens AFTER the LB/backend bucket exists
-  depends_on = [
-    google_compute_backend_bucket.cdn_backend,
-    google_compute_global_forwarding_rule.cdn_rule
-  ]
+  member = "allUsers"
 }
 
-output "cdn_ip" {
-  description = "Public IP address for the load balancer — open this in a browser"
-  value       = google_compute_global_address.cdn_ip.address
+# reserve IP address
+resource "google_compute_global_address" "default" {
+  name = "example-ip"
+}
+
+# backend bucket with CDN policy with default ttl settings
+resource "google_compute_backend_bucket" "default" {
+  name        = "backend-bucket"
+  description = "Contains beautiful images"
+  bucket_name = google_storage_bucket.site.name
+  enable_cdn  = true
+  cdn_policy {
+    cache_mode        = "CACHE_ALL_STATIC"
+    client_ttl        = 3600
+    default_ttl       = 3600
+    max_ttl           = 86400
+    negative_caching  = true
+    serve_while_stale = 86400
+  }
+}
+
+# url map
+resource "google_compute_url_map" "default" {
+  name            = "http-lb"
+  default_service = google_compute_backend_bucket.default.id
+}
+
+# http proxy
+resource "google_compute_target_http_proxy" "default" {
+  name    = "http-lb-proxy"
+  url_map = google_compute_url_map.default.id
+}
+
+# forwarding rule
+resource "google_compute_global_forwarding_rule" "default" {
+  name                  = "http-lb-forwarding-rule"
+  ip_protocol           = "TCP"
+  load_balancing_scheme = "EXTERNAL"
+  port_range            = "80"
+  target                = google_compute_target_http_proxy.default.id
+  ip_address            = google_compute_global_address.default.id
+}
+
+output "lb_ip" {
+  description = "Public IP address for the load balancer"
+  value       = google_compute_global_address.default.address
 }
